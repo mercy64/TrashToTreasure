@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrashToTreasure - Color Scheme Reference</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Inter, sans-serif; padding: 2rem; background: #f9fafb; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .color-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
+        .color-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .color-sample { width: 100%; height: 80px; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #e5e7eb; }
+        .color-info { margin-bottom: 0.5rem; }
+        .color-name { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .color-hex { font-family: monospace; background: #f3f4f6; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.9rem; }
+        .color-usage { font-size: 0.9rem; color: #6b7280; margin-top: 0.5rem; }
+        .demo-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .demo-buttons { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; border: none; font-weight: 500; cursor: pointer; transition: all 0.2s ease; }
+        .btn-primary { background: #8dc6ff; color: white; }
+        .btn-primary:hover { background: #22313f; transform: translateY(-1px); }
+        .btn-secondary { background: #e4f1fe; color: #22313f; border: 1px solid #8dc6ff; }
+        .btn-secondary:hover { background: #8dc6ff; color: white; transform: translateY(-1px); }
+        .demo-icons { display: flex; gap: 2rem; align-items: center; margin-bottom: 2rem; }
+        .icon-demo { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+        .recycle-icon { width: 40px; height: 40px; }
+        .status-demo { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .status-badge { padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.875rem; font-weight: 500; }
+        .status-available { background: #8dc6ff; color: white; }
+        .status-pending { background: #34495e; color: white; }
+        .status-sold { background: #e5e7eb; color: #6b7280; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="color: #22313f; margin-bottom: 1rem;">TrashToTreasure Color Scheme</h1>
+            <p style="color: #6b7280;">Consistent blue-themed color palette for the entire application</p>
+        </div>
+
+        <div class="color-grid">
+            <div class="color-card">
+                <div class="color-sample" style="background: #e4f1fe;"></div>
+                <div class="color-name">Primary Light</div>
+                <div class="color-hex">#e4f1fe</div>
+                <div class="color-usage">Backgrounds, hover states, light accents</div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-sample" style="background: #8dc6ff;"></div>
+                <div class="color-name">Primary</div>
+                <div class="color-hex">#8dc6ff</div>
+                <div class="color-usage">Main brand color, buttons, links, icons</div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-sample" style="background: #22313f;"></div>
+                <div class="color-name">Primary Dark</div>
+                <div class="color-hex">#22313f</div>
+                <div class="color-usage">Hover states, text, dark accents</div>
+            </div>
+
+            <div class="color-card">
+                <div class="color-sample" style="background: #34495e;"></div>
+                <div class="color-name">Secondary Dark</div>
+                <div class="color-hex">#34495e</div>
+                <div class="color-usage">Supporting elements, secondary text</div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2 style="color: #22313f; margin-bottom: 1.5rem;">Component Examples</h2>
+            
+            <h3 style="color: #22313f; margin-bottom: 1rem;">Buttons</h3>
+            <div class="demo-buttons">
+                <button class="btn btn-primary">Primary Button</button>
+                <button class="btn btn-secondary">Secondary Button</button>
+            </div>
+
+            <h3 style="color: #22313f; margin-bottom: 1rem;">Icons</h3>
+            <div class="demo-icons">
+                <div class="icon-demo">
+                    <svg class="recycle-icon" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#8dc6ff" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"></path>
+                        <path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12"></path>
+                        <path d="m14 16-3 3 3 3"></path>
+                        <path d="M8.293 13.596 7.196 9.5 3.1 10.598"></path>
+                        <path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843"></path>
+                        <path d="m13.378 9.633 4.096 1.098 1.097-4.096"></path>
+                    </svg>
+                    <span style="color: #22313f; font-size: 0.875rem;">Primary Icon</span>
+                </div>
+            </div>
+
+            <h3 style="color: #22313f; margin-bottom: 1rem;">Status Badges</h3>
+            <div class="status-demo">
+                <span class="status-badge status-available">Available</span>
+                <span class="status-badge status-pending">Pending</span>
+                <span class="status-badge status-sold">Sold</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 3rem; padding: 2rem; background: #e4f1fe; border-radius: 12px; text-align: center;">
+            <h3 style="color: #22313f; margin-bottom: 1rem;">Color Usage Guidelines</h3>
+            <p style="color: #34495e; margin-bottom: 0.5rem;">✅ Use #8dc6ff for primary actions and brand elements</p>
+            <p style="color: #34495e; margin-bottom: 0.5rem;">✅ Use #22313f for hover states and text</p>
+            <p style="color: #34495e; margin-bottom: 0.5rem;">✅ Use #e4f1fe for light backgrounds and subtle accents</p>
+            <p style="color: #34495e;">❌ Avoid mixing green colors with this blue theme</p>
+        </div>
+    </div>
+</body>
+</html>
