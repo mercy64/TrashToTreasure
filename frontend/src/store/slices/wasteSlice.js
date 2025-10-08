@@ -174,6 +174,9 @@ const wasteSlice = createSlice({
       .addCase(createListing.fulfilled, (state, action) => {
         state.loading = false;
         state.myListings.push(action.payload);
+        // Optimistically update user stats so dashboard shows the new listing immediately
+        if (!state.userStats) state.userStats = {};
+        state.userStats.total_listings = (state.userStats.total_listings || 0) + 1;
       })
       .addCase(createListing.rejected, (state, action) => {
         state.loading = false;

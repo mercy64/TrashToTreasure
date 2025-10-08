@@ -5,6 +5,8 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import { useLocation } from 'react-router-dom';
 import PrivateRoute from './components/auth/PrivateRoute';
+import useSocket from './hooks/useSocket';
+import { store } from './store';
 
 // Pages
 import Home from './pages/Home';
@@ -15,6 +17,11 @@ import RegisterGenerator from './pages/auth/RegisterGenerator';
 import RegisterRecycler from './pages/auth/RegisterRecycler';
 import RegisterDelivery from './pages/auth/RegisterDelivery';
 import Dashboard from './pages/Dashboard';
+import DashboardRouter from './pages/dashboard/DashboardRouter';
+import GeneratorDashboard from './pages/dashboard/GeneratorDashboard';
+import RecyclerDashboard from './pages/dashboard/RecyclerDashboard';
+import DeliveryDashboard from './pages/dashboard/DeliveryDashboard';
+import NotAuthorized from './pages/NotAuthorized';
 import WasteListings from './pages/waste/WasteListings';
 import CreateListing from './pages/waste/CreateListing';
 import ListingDetail from './pages/waste/ListingDetail';
@@ -31,7 +38,8 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
-      
+      {/* Initialize socket connection for real-time updates. Falls back to polling if not available. */}
+      {useSocket(store)}
       <main className="flex-grow">
         <Routes>
           {/* Public Routes */}
@@ -61,11 +69,11 @@ const App = () => {
           <Route path="/listings/:id" element={<ListingDetail />} />
 
           {/* Protected Routes */}
-          <Route path="/dashboard" element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          } />
+          <Route path="/dashboard" element={<PrivateRoute><DashboardRouter /></PrivateRoute>} />
+          <Route path="/dashboard/generator" element={<PrivateRoute requiredRole="generator"><GeneratorDashboard /></PrivateRoute>} />
+          <Route path="/dashboard/recycler" element={<PrivateRoute requiredRole="recycler"><RecyclerDashboard /></PrivateRoute>} />
+          <Route path="/dashboard/delivery" element={<PrivateRoute requiredRole="delivery"><DeliveryDashboard /></PrivateRoute>} />
+          <Route path="/not-authorized" element={<NotAuthorized />} />
           
           <Route path="/profile" element={
             <PrivateRoute>

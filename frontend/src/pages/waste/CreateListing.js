@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Upload, X, Plus, MapPin, DollarSign } from 'lucide-react';
-import { createListing } from '../../store/slices/wasteSlice';
+import { createListing, fetchMyListings, fetchUserStats } from '../../store/slices/wasteSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,8 @@ const CreateListing = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector(state => state.waste);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [topError, setTopError] = useState('');
   
   const [formData, setFormData] = useState({
     title: '',
@@ -116,16 +118,46 @@ const CreateListing = () => {
       submitData.append(`image_${index}`, file);
     });
 
+    // clear previous errors
+    setFieldErrors({});
+    setTopError('');
+
     try {
       const action = await dispatch(createListing(submitData));
-      const payload = unwrapResult(action);
-      // If we reach here the thunk resolved successfully and returned data
+      unwrapResult(action);
       toast.success('Listing created successfully!');
+
+      // Refresh user's listings and stats immediately so dashboard shows updated analytics
+      try {
+        dispatch(fetchMyListings());
+        dispatch(fetchUserStats());
+      } catch (e) {
+        console.warn('Failed to refresh listings/stats after create:', e);
+      }
+
       navigate('/dashboard');
     } catch (err) {
-      // unwrapResult throws if the thunk was rejected; err.payload may contain server errors
-      const message = err?.payload || err?.message || 'Failed to create listing';
-      toast.error(message);
+      // Network errors (no response) vs validation/server errors
+      const payload = err?.payload;
+      if (!payload && err?.message) {
+        // Likely a network error or connection refused
+        const networkMsg = err.message.includes('Network Error') || err.message.includes('ECONNREFUSED')
+          ? "Network error: can't reach the server. Please ensure the backend is running (127.0.0.1:8001)."
+          : err.message;
+        setTopError(networkMsg);
+        toast.error(networkMsg);
+      } else if (payload && typeof payload === 'object') {
+        // DRF error dict: map to fieldErrors
+        setFieldErrors(payload);
+        // show a compact summary toast
+        const nonField = payload.non_field_errors || payload.detail;
+        if (nonField) toast.error(Array.isArray(nonField) ? nonField.join(' ') : nonField);
+        else toast.error('Validation errors occurred. See the form for details.');
+      } else {
+        const fallback = payload || err?.message || 'Failed to create listing';
+        setTopError(fallback);
+        toast.error(fallback);
+      }
     }
   };
 
@@ -137,7 +169,13 @@ const CreateListing = () => {
             <h1 className="text-2xl font-bold text-gray-900">Create New Listing</h1>
             <p className="text-gray-600">List your recyclable waste for others to purchase</p>
           </div>
-
+          {topError && (
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="mt-3 p-3 bg-red-50 border border-red-200 text-red-700 rounded">
+                {topError}
+              </div>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="p-6">
             <div className="space-y-6">
               {/* Basic Information */}
@@ -158,6 +196,9 @@ const CreateListing = () => {
                       value={formData.title}
                       onChange={handleInputChange}
                     />
+                    {fieldErrors.title && (
+                      <p className="mt-1 text-sm text-red-600">{Array.isArray(fieldErrors.title) ? fieldErrors.title[0] : fieldErrors.title}</p>
+                    )}
                   </div>
 
                   <div className="md:col-span-2">
@@ -174,6 +215,10 @@ const CreateListing = () => {
                       value={formData.description}
                       onChange={handleInputChange}
                     />
+                    <p className="text-xs text-gray-500 mt-1">Tip: include how clean/sorted the waste is, contamination level, and whether it's baled or loose.</p>
+                    {fieldErrors.description && (
+                      <p className="mt-1 text-sm text-red-600">{Array.isArray(fieldErrors.description) ? fieldErrors.description[0] : fieldErrors.description}</p>
+                    )}
                   </div>
 
                   <div>
@@ -194,6 +239,10 @@ const CreateListing = () => {
                         </option>
                       ))}
                     </select>
+                    <p className="text-xs text-gray-500 mt-1">Choose the primary material type (this helps buyers find your listing).</p>
+                    {fieldErrors.type && (
+                      <p className="mt-1 text-sm text-red-600">{Array.isArray(fieldErrors.type) ? fieldErrors.type[0] : fieldErrors.type}</p>
+                    )}
                   </div>
 
                   <div>
@@ -210,6 +259,9 @@ const CreateListing = () => {
                       value={formData.contact_phone}
                       onChange={handleInputChange}
                     />
+                    {fieldErrors.contact_phone && (
+                      <p className="mt-1 text-sm text-red-600">{Array.isArray(fieldErrors.contact_phone) ? fieldErrors.contact_phone[0] : fieldErrors.contact_phone}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -234,6 +286,9 @@ const CreateListing = () => {
                       value={formData.quantity}
                       onChange={handleInputChange}
                     />
+                    {fieldErrors.quantity && (
+                      <p className="mt-1 text-sm text-red-600">{Array.isArray(fieldErrors.quantity) ? fieldErrors.quantity[0] : fieldErrors.quantity}</p>
+                    )}
                   </div>
 
                   <div>
@@ -274,6 +329,9 @@ const CreateListing = () => {
                         value={formData.price}
                         onChange={handleInputChange}
                       />
+                      {fieldErrors.price_per_unit && (
+                        <p className="mt-1 text-sm text-red-600">{Array.isArray(fieldErrors.price_per_unit) ? fieldErrors.price_per_unit[0] : fieldErrors.price_per_unit}</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -299,6 +357,9 @@ const CreateListing = () => {
                         value={formData.location}
                         onChange={handleInputChange}
                       />
+                      {fieldErrors.location && (
+                        <p className="mt-1 text-sm text-red-600">{Array.isArray(fieldErrors.location) ? fieldErrors.location[0] : fieldErrors.location}</p>
+                      )}
                     </div>
                   </div>
 
@@ -349,7 +410,10 @@ const CreateListing = () => {
                         </label>
                         <p className="pl-1">or drag and drop</p>
                       </div>
-                      <p className="text-xs text-gray-500">PNG, JPG, GIF up to 5MB (Max 5 images)</p>
+                      <p className="text-xs text-gray-500">PNG, JPG up to 5MB (Max 5 images). Tip: show close-up of material and a photo of the full pile for clarity.</p>
+                      {fieldErrors.images && (
+                        <p className="mt-1 text-sm text-red-600">{Array.isArray(fieldErrors.images) ? fieldErrors.images[0] : fieldErrors.images}</p>
+                      )}
                     </div>
                   </div>
 

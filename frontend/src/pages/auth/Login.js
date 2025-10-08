@@ -66,44 +66,40 @@ const Login = () => {
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="username" className="flex items-center gap-2 text-sm font-medium text-white/90">
-                  <Mail className="h-4 w-4 text-white/90" aria-hidden="true" />
-                  <span>Username or Email</span>
-                </label>
-                <div className="mt-1">
+                <label htmlFor="username" className="block text-sm font-medium text-white/90">Username or Email</label>
+                <div className="mt-1 relative">
                   <input
                     id="username"
                     name="username"
                     type="text"
                     required
-                    className="input-field bg-white/90 text-sky-900 w-full rounded-md font-medium text-base"
+                      className="input-field pl-14 bg-white/90 text-sky-900 w-full rounded-md"
                     placeholder="Enter your username or email"
                     aria-label="username or email"
                     aria-required="true"
                     value={formData.username}
                     onChange={handleChange}
                   />
+                  <Mail className="h-5 w-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none" aria-hidden="true" />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="password" className="flex items-center gap-2 text-sm font-medium text-white/90">
-                  <Lock className="h-4 w-4 text-white/90" aria-hidden="true" />
-                  <span>Password</span>
-                </label>
+                <label htmlFor="password" className="block text-sm font-medium text-white/90">Password</label>
                 <div className="mt-1 relative">
                   <input
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
                     required
-                    className="input-field pr-10 bg-white/90 text-sky-900 w-full rounded-md font-medium text-base"
+                      className="input-field pl-14 pr-10 bg-white/90 text-sky-900 w-full rounded-md"
                     placeholder="Enter your password"
                     aria-label="password"
                     aria-required="true"
                     value={formData.password}
                     onChange={handleChange}
                   />
+                  <Lock className="h-5 w-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none" aria-hidden="true" />
                   <button
                     type="button"
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"

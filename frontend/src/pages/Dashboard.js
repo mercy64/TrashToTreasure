@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Package2, Plus, Search, Filter, TrendingUp, Users, DollarSign, MessageSquare } from 'lucide-react';
 import { fetchUserWaste, fetchUserStats } from '../store/slices/wasteSlice';
 import { fetchConversations } from '../store/slices/messageSlice';
+import { useNavigate } from 'react-router-dom';
+import Skeleton from '../components/ui/Skeleton';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -12,6 +14,7 @@ const Dashboard = () => {
   
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [lastStatsUpdate, setLastStatsUpdate] = useState(null);
 
   // Calculate unread count from conversations
   const unreadCount = (conversations || []).reduce((count, conversation) => {
@@ -25,6 +28,43 @@ const Dashboard = () => {
       dispatch(fetchConversations());
     }
   }, [dispatch, user]);
+
+  // Polling for near-real-time updates (safe fallback when sockets are not available)
+  useEffect(() => {
+    if (!user) return undefined;
+
+    const interval = setInterval(() => {
+      dispatch(fetchUserWaste());
+      dispatch(fetchUserStats());
+      dispatch(fetchConversations());
+    }, 10000); // every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [dispatch, user]);
+
+  const navigate = useNavigate();
+
+  const goCreateListing = useCallback(() => navigate('/create-listing'), [navigate]);
+  const goBrowse = useCallback(() => navigate('/listings'), [navigate]);
+  const goMessages = useCallback(() => navigate('/messages'), [navigate]);
+  const goProfile = useCallback(() => navigate('/profile'), [navigate]);
+
+  // Update the last-stats timestamp whenever userStats changes so the UI can show recency
+  useEffect(() => {
+    if (userStats && Object.keys(userStats).length > 0) {
+      setLastStatsUpdate(new Date());
+    }
+  }, [userStats]);
+
+  const timeAgo = (date) => {
+    if (!date) return '';
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 60) return `${seconds}s ago`;
+    const mins = Math.floor(seconds / 60);
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    return `${hours}h ago`;
+  };
 
   const filteredWaste = (myListings || []).filter(item => {
     const matchesSearch = item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -105,10 +145,6 @@ const Dashboard = () => {
               <div className="px-6 py-4 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h2 className="text-lg font-semibold text-gray-900">Your Listings</h2>
-                  <button className="btn-primary">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Listing
-                  </button>
                 </div>
                 
                 {/* Search and Filter */}
@@ -144,8 +180,10 @@ const Dashboard = () => {
 
               <div className="p-6">
                 {loading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="loading-spinner"></div>
+                  <div className="space-y-4">
+                    <Skeleton className="h-6 w-1/3 mx-auto" />
+                    <Skeleton className="h-40" />
+                    <Skeleton className="h-40" />
                   </div>
                 ) : filteredWaste.length > 0 ? (
                   <div className="space-y-4">
@@ -175,8 +213,8 @@ const Dashboard = () => {
                           )}
                         </div>
                         <div className="flex gap-2 mt-3">
-                          <button className="btn-secondary text-sm">Edit</button>
-                          <button className="text-red-600 hover:text-red-700 text-sm">Delete</button>
+                                    <button className="btn-secondary text-sm">Edit</button>
+                                    <button className="text-red-600 hover:text-red-700 text-sm">Delete</button>
                         </div>
                       </div>
                     ))}
@@ -185,9 +223,16 @@ const Dashboard = () => {
                   <div className="text-center py-8">
                     <Package2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-500">No listings found</p>
-                    <button className="btn-primary mt-4">
-                      Create Your First Listing
-                    </button>
+                    <div className="mt-4 flex justify-center gap-3">
+                      <button onClick={goCreateListing} className="inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-sm transition">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create Your First Listing
+                      </button>
+                      <button onClick={goBrowse} className="inline-flex items-center bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow-sm">
+                        <Search className="h-4 w-4 mr-2" />
+                        Browse Listings
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -200,15 +245,15 @@ const Dashboard = () => {
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <button className="w-full btn-primary justify-start">
+                <button onClick={goCreateListing} className="w-full inline-flex items-center justify-start bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
                   <Plus className="h-4 w-4 mr-2" />
                   Create Listing
                 </button>
-                <button className="w-full btn-secondary justify-start">
+                <button onClick={goBrowse} className="w-full inline-flex items-center justify-start bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg">
                   <Search className="h-4 w-4 mr-2" />
                   Browse Waste
                 </button>
-                <button className="w-full btn-secondary justify-start">
+                <button onClick={goMessages} className="w-full inline-flex items-center justify-start bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg">
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Messages {unreadCount > 0 && (
                     <span className="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1">
@@ -216,7 +261,7 @@ const Dashboard = () => {
                     </span>
                   )}
                 </button>
-                <button className="w-full btn-secondary justify-start">
+                <button onClick={goProfile} className="w-full inline-flex items-center justify-start bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg">
                   <Users className="h-4 w-4 mr-2" />
                   Profile Settings
                 </button>
@@ -239,6 +284,9 @@ const Dashboard = () => {
                   </div>
                   <p className="text-sm text-gray-600">Waste Diverted from Landfills</p>
                 </div>
+                {lastStatsUpdate && (
+                  <div className="text-center text-xs text-gray-400 mt-2">Updated {timeAgo(lastStatsUpdate)}</div>
+                )}
               </div>
             </div>
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TrashToTreasure 🗂️♻️
 
 A comprehensive waste management platform that connects waste generators with collectors and recyclers, promoting sustainable waste disposal and resource recovery.
@@ -280,3 +281,7 @@ Project Link: [https://github.com/YOUR_USERNAME/TrashToTreasure](https://github.
 ---
 
 **Built with ❤️ for a sustainable future**"# Trash-to-treasure" 
+=======
+# TrashToTreasure
+"Waste Management Platform - React Frontend &amp; Django Backend"
+>>>>>>> 6b6497ea6ce2c3e8d73b1b36025925a0fabffef8
