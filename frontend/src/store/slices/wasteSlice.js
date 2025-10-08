@@ -129,12 +129,8 @@ export const fetchUserStats = createAsyncThunk(
 export const clearWaste = createAsyncThunk(
   'waste/clearWaste',
   async (_, { rejectWithValue }) => {
-    try {
-      // This would typically clear or reset waste data
-      return {};
-    } catch (error) {
-      return rejectWithValue('Failed to clear waste data');
-    }
+    // This thunk simply resolves to an empty object (no API call needed)
+    return {};
   }
 );
 

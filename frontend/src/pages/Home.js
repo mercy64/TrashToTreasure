@@ -1,17 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { 
-  Recycle, 
-  Users, 
-  TrendingUp, 
-  Shield,
-  ArrowRight,
-  CheckCircle,
-  Star,
-  MapPin,
-  User
-} from 'lucide-react';
+import { Recycle, Users, TrendingUp, Shield, ArrowRight, Star, User } from 'lucide-react';
 
 const Home = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);

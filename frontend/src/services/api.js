@@ -85,7 +85,11 @@ export const wasteAPI = {
     api.get('/api/waste/listings/', { params }),
   
   createListing: (listingData) =>
-    api.post('/api/waste/listings/create/', listingData),
+    // If we're sending a FormData instance (with images), let the
+    // browser/set axios determine the Content-Type (including boundary).
+    (listingData instanceof FormData
+      ? api.post('/api/waste/listings/create/', listingData)
+      : api.post('/api/waste/listings/create/', listingData)),
   
   getMyListings: () =>
     api.get('/api/waste/listings/my/'),

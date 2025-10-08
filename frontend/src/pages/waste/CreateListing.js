@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Upload, X, Plus, MapPin, Package2, DollarSign } from 'lucide-react';
+import { Upload, X, Plus, MapPin, DollarSign } from 'lucide-react';
 import { createListing } from '../../store/slices/wasteSlice';
+import { unwrapResult } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
@@ -98,10 +99,17 @@ const CreateListing = () => {
 
     const submitData = new FormData();
     
-    // Add form data
-    Object.keys(formData).forEach(key => {
-      submitData.append(key, formData[key]);
-    });
+    // Add form data. Map frontend field names to backend model fields.
+    submitData.append('title', formData.title);
+    submitData.append('description', formData.description);
+    submitData.append('type', formData.category);
+    submitData.append('quantity', formData.quantity);
+    submitData.append('unit', formData.unit);
+    submitData.append('location', formData.location);
+    submitData.append('price_per_unit', formData.price);
+    submitData.append('contact_phone', formData.contact_phone);
+    submitData.append('pickup_available', formData.pickup_available);
+    submitData.append('delivery_available', formData.delivery_available);
     
     // Add image files
     imageFiles.forEach((file, index) => {
@@ -109,15 +117,15 @@ const CreateListing = () => {
     });
 
     try {
-      const result = await dispatch(createListing(submitData));
-      if (createListing.fulfilled.match(result)) {
-        toast.success('Listing created successfully!');
-        navigate('/dashboard');
-      } else {
-        toast.error(result.payload || 'Failed to create listing');
-      }
-    } catch (error) {
-      toast.error('An error occurred while creating the listing');
+      const action = await dispatch(createListing(submitData));
+      const payload = unwrapResult(action);
+      // If we reach here the thunk resolved successfully and returned data
+      toast.success('Listing created successfully!');
+      navigate('/dashboard');
+    } catch (err) {
+      // unwrapResult throws if the thunk was rejected; err.payload may contain server errors
+      const message = err?.payload || err?.message || 'Failed to create listing';
+      toast.error(message);
     }
   };
 

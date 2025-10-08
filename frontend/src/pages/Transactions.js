@@ -1,5 +1,5 @@
 import React from 'react';
-import { CreditCard, Package2, TrendingUp, Calendar } from 'lucide-react';
+import { CreditCard, Package2, TrendingUp } from 'lucide-react';
 
 const Transactions = () => {
   return (

@@ -8,4 +8,4 @@ if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
 # Django settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'trashtrotreasure.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "trashtrotreasure.settings")

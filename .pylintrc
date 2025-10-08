@@ -1,0 +1,27 @@
+[MASTER]
+# Ignore Django migrations (auto-generated) and build artifacts
+ignore=migrations
+
+[MESSAGES CONTROL]
+# Disable stylistic and auto-generated warnings to reduce noise
+disable=
+    C0114,  # missing-module-docstring
+    C0115,  # missing-class-docstring
+    C0116,  # missing-function-docstring
+    C0303,  # trailing-whitespace
+    C0305,  # trailing-newlines
+    C0301,  # line-too-long
+    R0903,  # too-few-public-methods
+    R0914,  # too-many-locals
+    R0915,  # too-many-statements
+    R1710,  # inconsistent-return-statements
+    C0411,  # wrong-import-order
+    R0801,  # duplicate-code
+
+[FORMAT]
+# Allow a more permissive line length for this project
+max-line-length=120
+
+[REPORTS]
+output-format=text
+score=yes

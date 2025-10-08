@@ -20,6 +20,7 @@ const Navbar = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { unreadCount } = useSelector((state) => state.notifications);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const currentPath = window.location.pathname;
 
   const handleLogout = () => {
     dispatch(logout());
@@ -40,9 +41,12 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/listings" className="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium" style={{'--hover-color': '#22313f'}}>
-              Browse Waste
-            </Link>
+            {/* Hide Browse Waste on the public landing, login and register pages to simplify title bar */}
+            {!(currentPath === '/' || currentPath === '/login' || currentPath === '/register') && (
+              <Link to="/listings" className="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium" style={{'--hover-color': '#22313f'}}>
+                Browse Waste
+              </Link>
+            )}
 
             {isAuthenticated ? (
               <>
@@ -131,7 +135,7 @@ const Navbar = () => {
                   to="/register"
                   className="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                 >
-                  🚀 Join Free
+                  Sign up
                 </Link>
               </div>
             )}
@@ -153,7 +157,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
               <Link
-                to="/listings"
+                to={(currentPath === '/login' || currentPath === '/register' || currentPath === '/') ? '/home' : '/listings'}
                 className="block text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >

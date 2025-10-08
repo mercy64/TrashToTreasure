@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Search, Filter, MapPin, Clock, Package2, Eye } from 'lucide-react';
+import { Search, MapPin, Clock, Package2, Eye } from 'lucide-react';
 import { fetchListings, clearWaste } from '../../store/slices/wasteSlice';
 import { Link } from 'react-router-dom';
 

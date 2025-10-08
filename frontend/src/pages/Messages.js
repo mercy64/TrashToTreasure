@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MessageSquare, Users, Send, Search } from 'lucide-react';
+import { MessageSquare, Users, Search } from 'lucide-react';
 
 const Messages = () => {
   return (

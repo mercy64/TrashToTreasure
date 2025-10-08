@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Recycle, Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -24,22 +27,28 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/listings" className="text-gray-300 text-sm" style={{'--hover-color': '#8dc6ff'}} onMouseEnter={(e) => e.target.style.color = '#8dc6ff'} onMouseLeave={(e) => e.target.style.color = ''}>
+                <Link
+                  to={isAuthenticated ? '/listings' : '/login'}
+                  className="text-gray-300 text-sm"
+                  style={{ '--hover-color': '#8dc6ff' }}
+                  onMouseEnter={(e) => (e.target.style.color = '#8dc6ff')}
+                  onMouseLeave={(e) => (e.target.style.color = '')}
+                >
                   Browse Waste
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-300 hover:text-green-400 text-sm">
+                <Link to={isAuthenticated ? '/about' : '/login'} className="text-gray-300 hover:text-green-400 text-sm">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/how-it-works" className="text-gray-300 hover:text-green-400 text-sm">
+                <Link to={isAuthenticated ? '/how-it-works' : '/login'} className="text-gray-300 hover:text-green-400 text-sm">
                   How It Works
                 </Link>
               </li>
               <li>
-                <Link to="/pricing" className="text-gray-300 hover:text-green-400 text-sm">
+                <Link to={isAuthenticated ? '/pricing' : '/login'} className="text-gray-300 hover:text-green-400 text-sm">
                   Pricing
                 </Link>
               </li>
@@ -99,16 +108,16 @@ const Footer = () => {
               © 2025 TrashToTreasure. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-green-400 text-sm">
+              <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-400 text-sm">
                 Facebook
               </a>
-              <a href="#" className="text-gray-400 hover:text-green-400 text-sm">
+              <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-400 text-sm">
                 Twitter
               </a>
-              <a href="#" className="text-gray-400 hover:text-green-400 text-sm">
+              <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-400 text-sm">
                 LinkedIn
               </a>
-              <a href="#" className="text-gray-400 hover:text-green-400 text-sm">
+              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-400 text-sm">
                 Instagram
               </a>
             </div>

@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { 
-  Package2, 
-  Plus, 
-  Search, 
-  Filter, 
-  TrendingUp, 
-  Users, 
-  DollarSign,
-  MessageSquare,
-  Bell
-} from 'lucide-react';
+import { Package2, Plus, Search, Filter, TrendingUp, Users, DollarSign, MessageSquare } from 'lucide-react';
 import { fetchUserWaste, fetchUserStats } from '../store/slices/wasteSlice';
 import { fetchConversations } from '../store/slices/messageSlice';
 
@@ -46,7 +35,7 @@ const Dashboard = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'available': return 'text-white' + ' ' + 'bg-primary';
+  case 'available': return 'text-white bg-primary';
       case 'sold': return 'bg-gray-100 text-gray-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-blue-100 text-blue-800';
