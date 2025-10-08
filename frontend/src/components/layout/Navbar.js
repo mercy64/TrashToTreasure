@@ -123,15 +123,15 @@ const Navbar = () => {
               <div className="flex items-center space-x-4">
                 <Link
                   to="/login"
-                  className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium"
+                  className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700"
+                  className="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                 >
-                  Sign Up
+                  🚀 Join Free
                 </Link>
               </div>
             )}
@@ -211,10 +211,10 @@ const Navbar = () => {
                   </Link>
                   <Link
                     to="/register"
-                    className="block text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-base font-medium"
+                    className="block bg-green-600 text-white hover:bg-green-700 px-3 py-3 rounded-lg text-base font-semibold mx-3 mt-2 text-center transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Sign Up
+                    🚀 Join TrashToTreasure Free
                   </Link>
                 </>
               )}

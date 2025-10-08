@@ -50,7 +50,9 @@ api.interceptors.response.use(
           // Refresh failed, logout user
           localStorage.removeItem('token');
           localStorage.removeItem('refreshToken');
-          window.location.href = '/login';
+          if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+          }
         }
       }
     }

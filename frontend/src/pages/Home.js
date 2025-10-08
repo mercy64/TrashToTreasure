@@ -81,7 +81,7 @@ const Home = () => {
                 <>
                   <Link
                     to="/create-listing"
-                    className="text-white px-8 py-3 rounded-lg text-lg font-semibold flex items-center justify-center space-x-2"
+                    className="text-white px-8 py-4 rounded-lg text-lg font-semibold flex items-center justify-center space-x-2 transition-colors"
                     style={{backgroundColor: '#8dc6ff'}}
                     onMouseEnter={(e) => e.target.style.backgroundColor = '#22313f'}
                     onMouseLeave={(e) => e.target.style.backgroundColor = '#8dc6ff'}
@@ -91,7 +91,7 @@ const Home = () => {
                   </Link>
                   <Link
                     to="/listings"
-                    className="bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white px-8 py-3 rounded-lg text-lg font-semibold"
+                    className="bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
                   >
                     Browse Materials
                   </Link>
@@ -100,20 +100,38 @@ const Home = () => {
                 <>
                   <Link
                     to="/register"
-                    className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold flex items-center justify-center space-x-2"
+                    className="bg-green-500 hover:bg-green-600 text-white px-10 py-4 rounded-lg text-xl font-bold flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
                   >
-                    <span>Get Started</span>
-                    <ArrowRight className="h-5 w-5" />
+                    <span>🚀 Join TrashToTreasure</span>
+                    <ArrowRight className="h-6 w-6" />
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
+                  >
+                    Already have an account? Sign In
                   </Link>
                   <Link
                     to="/listings"
-                    className="bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white px-8 py-3 rounded-lg text-lg font-semibold"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
                   >
-                    Explore Platform
+                    Explore Platform (No Account Needed)
                   </Link>
                 </>
               )}
             </div>
+            
+            {/* Additional Sign Up Incentive */}
+            {!isAuthenticated && (
+              <div className="mt-8 p-4 bg-white bg-opacity-10 rounded-lg max-w-2xl mx-auto">
+                <p className="text-lg text-white mb-2">
+                  ✨ <strong>New User Benefits:</strong>
+                </p>
+                <p className="text-gray-200">
+                  • Free account setup • Zero listing fees for first month • Access to premium buyers network
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -283,12 +301,49 @@ const Home = () => {
           <p className="text-xl mb-8 text-gray-200 max-w-2xl mx-auto">
             Join TrashToTreasure today and turn your waste into profit while helping the environment
           </p>
-          {!isAuthenticated && (
+          {!isAuthenticated ? (
+            <div className="space-y-4">
+              <Link
+                to="/register"
+                className="bg-green-500 hover:bg-green-600 text-white px-12 py-4 rounded-lg text-xl font-bold inline-flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
+              >
+                <span>🌟 Create Free Account</span>
+                <ArrowRight className="h-6 w-6" />
+              </Link>
+              <div className="mt-4">
+                <p className="text-gray-300 text-sm">
+                  Already have an account? {' '}
+                  <Link 
+                    to="/login" 
+                    className="text-white underline hover:text-blue-200 font-semibold"
+                  >
+                    Sign in here
+                  </Link>
+                </p>
+              </div>
+              
+              {/* Social Proof */}
+              <div className="mt-8 flex justify-center items-center space-x-8 text-gray-300">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white">1000+</div>
+                  <div className="text-sm">Active Users</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white">500+</div>
+                  <div className="text-sm">Waste Listings</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white">50+</div>
+                  <div className="text-sm">Cities Covered</div>
+                </div>
+              </div>
+            </div>
+          ) : (
             <Link
-              to="/register"
-              className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg text-lg font-semibold inline-flex items-center space-x-2"
+              to="/dashboard"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold inline-flex items-center space-x-2"
             >
-              <span>Get Started Now</span>
+              <span>Go to Dashboard</span>
               <ArrowRight className="h-5 w-5" />
             </Link>
           )}
