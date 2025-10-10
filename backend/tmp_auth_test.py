@@ -4,6 +4,7 @@ import time
 
 BASE_URL = "http://127.0.0.1:8001"
 
+
 def main():
     unique = str(int(time.time()))
     username = f"testuser_{unique}"
@@ -74,5 +75,5 @@ def main():
             print('Profile request failed:', err)
 
 
-    if __name__ == '__main__':
-        main()
+if __name__ == '__main__':
+    main()
