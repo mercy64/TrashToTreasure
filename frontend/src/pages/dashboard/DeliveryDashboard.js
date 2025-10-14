@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin } from 'lucide-react';
+import DeliveryRoutes from './DeliveryRoutes';
 
 const DeliveryDashboard = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const DeliveryDashboard = () => {
           <button aria-label="View my routes" onClick={() => navigate('/profile')} className="inline-flex items-center bg-indigo-600 text-white px-4 py-2 rounded">
             <MapPin className="mr-2" /> My Routes
           </button>
-          <div className="bg-white rounded shadow p-4">Assigned pickups list will appear here with contact links.</div>
+          <DeliveryRoutes />
         </div>
       </div>
     </div>

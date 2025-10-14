@@ -101,6 +101,17 @@ export const wasteAPI = {
     api.get('/api/waste/stats/'),
 };
 
+// New endpoints
+export const wasteExtrasAPI = {
+  getPrices: () => api.get('/api/waste/prices/'),
+  estimatePrice: (body) => api.post('/api/waste/prices/', body),
+  claimListing: (listingId) => api.post(`/api/waste/listings/${listingId}/claim/`),
+  unclaimListing: (listingId) => api.post(`/api/waste/listings/${listingId}/unclaim/`),
+  getRoutes: () => api.get('/api/waste/routes/'),
+  createRoute: (body) => api.post('/api/waste/routes/assign/', body),
+  unassignListing: (listingId) => api.post(`/api/waste/listings/${listingId}/unassign/`),
+};
+
 // Messaging API
 export const messageAPI = {
   getConversations: () =>

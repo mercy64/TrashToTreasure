@@ -29,7 +29,9 @@ def main():
     }
 
     try:
-        r = requests.post(f"{BASE_URL}/api/auth/register/", json=reg_payload, timeout=10)
+        r = requests.post(
+            f"{BASE_URL}/api/auth/register/", json=reg_payload, timeout=10
+        )
         print("Register status:", r.status_code)
         try:
             print("Register response:", r.json())
@@ -39,7 +41,7 @@ def main():
         print("Register request failed:", err)
         return
 
-    print('\nAttempting login...')
+    print("\nAttempting login...")
     try:
         r2 = requests.post(
             f"{BASE_URL}/api/auth/login/",
@@ -57,23 +59,21 @@ def main():
 
     if r2.status_code == 200:
         data = r2.json()
-        access = data.get('access') or data.get('token') or data.get('access_token')
+        access = data.get("access") or data.get("token") or data.get("access_token")
         if not access:
-            print('No access token found in login response')
+            print("No access token found in login response")
             return
         headers = {"Authorization": f"Bearer {access}"}
         try:
             rp = requests.get(
                 f"{BASE_URL}/api/auth/profile/", headers=headers, timeout=10
             )
-            print('Profile status:', rp.status_code)
+            print("Profile status:", rp.status_code)
             try:
-                print('Profile response:', rp.json())
+                print("Profile response:", rp.json())
             except ValueError:
-                print('Profile text:', rp.text)
+                print("Profile text:", rp.text)
         except requests.exceptions.RequestException as err:
-            print('Profile request failed:', err)
-
-
-if __name__ == '__main__':
-    main()
+            print("Profile request failed:", err)
+    if __name__ == "__main__":
+        main()

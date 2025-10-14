@@ -8,14 +8,21 @@ def api_test_view(request):
             "status": "success",
             "message": "TrashToTreasure API is working!",
             "endpoints": {
-                "auth": ["/api/auth/register/", "/api/auth/login/", "/api/auth/profile/"],
+                "auth": [
+                    "/api/auth/register/",
+                    "/api/auth/login/",
+                    "/api/auth/profile/",
+                ],
                 "waste": [
                     "/api/waste/listings/",
                     "/api/waste/listings/create/",
                     "/api/waste/listings/my/",
                     "/api/waste/transactions/my/",
                 ],
-                "messaging": ["/api/messaging/conversations/", "/api/messaging/notifications/"],
+                "messaging": [
+                    "/api/messaging/conversations/",
+                    "/api/messaging/notifications/",
+                ],
             },
         }
     )

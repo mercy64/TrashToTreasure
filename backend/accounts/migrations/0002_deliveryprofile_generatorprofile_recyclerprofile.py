@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("accounts", "0001_initial"),
     ]
@@ -15,9 +14,23 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="DeliveryProfile",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                ("vehicle_type", models.CharField(blank=True, max_length=100, null=True)),
-                ("license_number", models.CharField(blank=True, max_length=100, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "vehicle_type",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
+                (
+                    "license_number",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
                 (
                     "user",
                     models.OneToOneField(
@@ -31,10 +44,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="GeneratorProfile",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 (
                     "typical_waste_types",
-                    models.TextField(blank=True, help_text="Comma-separated waste types", null=True),
+                    models.TextField(
+                        blank=True, help_text="Comma-separated waste types", null=True
+                    ),
                 ),
                 (
                     "user",
@@ -49,8 +72,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="RecyclerProfile",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
-                ("company_name", models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "company_name",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
                 (
                     "user",
                     models.OneToOneField(

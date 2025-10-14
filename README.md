@@ -177,6 +177,19 @@ python manage.py runserver
 - `GET /api/waste/listings/my/` - Get my listings (authenticated)
 - `GET /api/waste/transactions/my/` - Get my transactions (authenticated)
 
+### New Waste API additions
+- `POST /api/waste/listings/<id>/claim/` - Claim a listing (authenticated). Uses an atomic update to prevent race conditions; returns 409 if already claimed.
+- `POST /api/waste/listings/<id>/unclaim/` - Unclaim a listing (claimer or admin).
+- `GET /api/waste/prices/` - List active price suggestions.
+- `POST /api/waste/prices/` - Estimate total price for a given type/quantity. Body: `{ "type": "plastic", "quantity": 12.5, "unit": "kg" }`.
+- `POST /api/waste/prices/manage/` - (admin) Create a price entry.
+- `PUT /api/waste/prices/manage/<price_id>/` - (admin) Update price entry.
+- `DELETE /api/waste/prices/manage/<price_id>/` - (admin) Delete price entry.
+- `POST /api/waste/routes/assign/` - Create and assign a simple route for a collector. Body: `{ "collector_id": <id>, "max_count": 10 }` returns an ordered list of listing ids and assigns them to the collector.
+- `POST /api/waste/listings/<id>/unassign/` - Unassign listing from collector (assigned user or admin).
+
+Note: Authenticated endpoints require JWT bearer token or session authentication.
+
 ### Messaging
 - `GET /api/messaging/conversations/` - Get my conversations (authenticated)
 - `POST /api/messaging/messages/send/` - Send message (authenticated)

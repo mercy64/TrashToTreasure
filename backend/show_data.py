@@ -13,7 +13,9 @@ def main():
     try:
         django.setup()
     except Exception as exc:  # pragma: no cover - dev helper script
-        print("Error setting up Django. Make sure you're running this from the backend folder and your virtualenv is active.")
+        print(
+            "Error setting up Django. Make sure you're running this from the backend folder and your virtualenv is active."
+        )
         print(str(exc))
         sys.exit(1)
 
@@ -55,7 +57,9 @@ def main():
             qty = getattr(listing, "quantity", "N/A")
             print(f"     Price: ${price}/{unit} | Qty: {qty} {unit}")
             status = getattr(listing, "get_status_display", lambda: "")()
-            posted_by = listing.user.username if getattr(listing, "user", None) else "N/A"
+            posted_by = (
+                listing.user.username if getattr(listing, "user", None) else "N/A"
+            )
             print(f"     Status: {status} | Posted by: {posted_by}")
             print(f"     Location: {getattr(listing, 'location', 'N/A')}")
         if total_listings > 20:
@@ -70,11 +74,23 @@ def main():
         tx_qs = Transaction.objects.select_related("listing", "buyer", "seller")[:20]
         for transaction in tx_qs:
             listing_title = transaction.listing.title if transaction.listing else "N/A"
-            print(f"   • {listing_title} - ${getattr(transaction, 'total_amount', 'N/A')}")
-            buyer = transaction.buyer.username if getattr(transaction, 'buyer', None) else 'N/A'
-            seller = transaction.seller.username if getattr(transaction, 'seller', None) else 'N/A'
+            print(
+                f"   • {listing_title} - ${getattr(transaction, 'total_amount', 'N/A')}"
+            )
+            buyer = (
+                transaction.buyer.username
+                if getattr(transaction, "buyer", None)
+                else "N/A"
+            )
+            seller = (
+                transaction.seller.username
+                if getattr(transaction, "seller", None)
+                else "N/A"
+            )
             print(f"     Buyer: {buyer} | Seller: {seller}")
-            print(f"     Status: {getattr(transaction, 'get_status_display', lambda: '')()}")
+            print(
+                f"     Status: {getattr(transaction, 'get_status_display', lambda: '')()}"
+            )
         if total_tx > 20:
             print(f"   ...and {total_tx - 20} more transactions")
     except Exception as exc:
@@ -89,18 +105,22 @@ def main():
         for convo in convo_qs:
             participants = [p.username for p in convo.participants.all()]
             if len(participants) >= 2:
-                print(f"   • Conversation between: {participants[0]} and {participants[1]}")
+                print(
+                    f"   • Conversation between: {participants[0]} and {participants[1]}"
+                )
             else:
-                print(f"   • Conversation: {participants[0] if participants else 'Empty'}")
+                print(
+                    f"   • Conversation: {participants[0] if participants else 'Empty'}"
+                )
 
         print(f"   Total Messages: {Message.objects.count()}")
         for msg in Message.objects.select_related("sender")[:3]:
-            sender = msg.sender.username if getattr(msg, 'sender', None) else 'N/A'
+            sender = msg.sender.username if getattr(msg, "sender", None) else "N/A"
             print(f"   • From {sender}: {getattr(msg, 'content', '')[:50]}...")
 
         print(f"   Total Notifications: {Notification.objects.count()}")
         for notif in Notification.objects.select_related("user")[:3]:
-            user_name = notif.user.username if getattr(notif, 'user', None) else 'N/A'
+            user_name = notif.user.username if getattr(notif, "user", None) else "N/A"
             print(f"   • To {user_name}: {getattr(notif, 'title', '')}")
     except Exception as exc:
         print("   Could not fetch messaging data:", exc)

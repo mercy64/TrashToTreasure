@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,7 +16,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="WasteListing",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("title", models.CharField(max_length=200)),
                 ("description", models.TextField()),
                 (
@@ -41,7 +48,10 @@ class Migration(migrations.Migration):
                 ("location", models.CharField(max_length=255)),
                 ("latitude", models.FloatField(blank=True, null=True)),
                 ("longitude", models.FloatField(blank=True, null=True)),
-                ("price_per_unit", models.DecimalField(decimal_places=2, max_digits=10)),
+                (
+                    "price_per_unit",
+                    models.DecimalField(decimal_places=2, max_digits=10),
+                ),
                 (
                     "status",
                     models.CharField(
@@ -57,7 +67,13 @@ class Migration(migrations.Migration):
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
-                ("user", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 "ordering": ["-created_at"],
@@ -66,7 +82,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="WasteImage",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("image", models.ImageField(upload_to="waste_images/")),
                 ("caption", models.CharField(blank=True, max_length=200)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
@@ -83,7 +107,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Transaction",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
                 ("quantity", models.FloatField()),
                 ("total_amount", models.DecimalField(decimal_places=2, max_digits=10)),
                 (
@@ -115,12 +147,17 @@ class Migration(migrations.Migration):
                 (
                     "seller",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, related_name="sales", to=settings.AUTH_USER_MODEL
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="sales",
+                        to=settings.AUTH_USER_MODEL,
                     ),
                 ),
                 (
                     "listing",
-                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="waste_management.wastelisting"),
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="waste_management.wastelisting",
+                    ),
                 ),
             ],
         ),
