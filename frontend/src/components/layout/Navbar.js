@@ -13,6 +13,7 @@ import {
   LogOut,
   Settings
 } from 'lucide-react';
+import Notifications from '../Notifications';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -43,12 +44,9 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             {/* Hide Browse Waste on the public landing, login and register pages to simplify title bar */}
             {!(currentPath === '/' || currentPath === '/login' || currentPath === '/register') && (
-              // Only show the public Browse link for non-authenticated users or recyclers
-              (!isAuthenticated || (user && user.role && user.role.toLowerCase().includes('buyer')) ) ? (
-                <Link to="/listings" className="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium" style={{'--hover-color': '#22313f'}}>
-                  Browse Waste
-                </Link>
-              ) : null
+              <Link to="/listings" className="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium" style={{'--hover-color': '#22313f'}}>
+                Browse Waste
+              </Link>
             )}
 
             {isAuthenticated ? (
@@ -56,23 +54,28 @@ const Navbar = () => {
                 <Link to="/dashboard" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">
                   Dashboard
                 </Link>
-                {/* Role-based CTA: List Waste only for generators, Browse for recyclers is handled above */}
-                {user && user.role && user.role.toLowerCase().includes('waste_generator') && (
-                  <Link to="/create-listing" className="flex items-center space-x-1 text-white px-4 py-2 rounded-md text-sm font-medium" style={{backgroundColor: '#8dc6ff'}} onMouseEnter={(e) => e.target.style.backgroundColor = '#22313f'} onMouseLeave={(e) => e.target.style.backgroundColor = '#8dc6ff'}>
-                    <Plus className="h-4 w-4" />
-                    <span>List Waste</span>
-                  </Link>
-                )}
-                
-                {/* Notifications */}
-                <Link to="/notifications" className="relative p-2 text-gray-700 hover:text-green-600">
-                  <Bell className="h-6 w-6" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {unreadCount}
-                    </span>
-                  )}
+                <Link to="/create-listing" className="flex items-center space-x-1 text-white px-4 py-2 rounded-md text-sm font-medium" style={{backgroundColor: '#8dc6ff'}} onMouseEnter={(e) => e.target.style.backgroundColor = '#22313f'} onMouseLeave={(e) => e.target.style.backgroundColor = '#8dc6ff'}>
+                  <Plus className="h-4 w-4" />
+                  <span>List Waste</span>
                 </Link>
+                
+                {/* Notifications dropdown */}
+                <div className="relative">
+                  <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="relative p-2 text-gray-700 hover:text-green-600">
+                    <Bell className="h-6 w-6" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+                  {/* Notifications dropdown anchored to bell */}
+                  {isMenuOpen && (
+                    <div className="absolute right-0 mt-2 z-50">
+                      <Notifications />
+                    </div>
+                  )}
+                </div>
 
                 {/* Messages */}
                 <Link to="/messages" className="p-2 text-gray-700 hover:text-green-600">
@@ -179,16 +182,13 @@ const Navbar = () => {
                   >
                     Dashboard
                   </Link>
-                  {/* Mobile List Waste visible only to generators */}
-                  {user && user.role && user.role.toLowerCase().includes('waste_generator') && (
-                    <Link
-                      to="/create-listing"
-                      className="block text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-base font-medium"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      List Waste
-                    </Link>
-                  )}
+                  <Link
+                    to="/create-listing"
+                    className="block text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-base font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    List Waste
+                  </Link>
                   <Link
                     to="/messages"
                     className="block text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-base font-medium"

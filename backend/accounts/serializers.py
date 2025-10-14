@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, GeneratorProfile
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -34,4 +34,31 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "email", "first_name", "last_name", "phone", "role", "location", "is_verified"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "phone",
+            "role",
+            "location",
+            "is_verified",
+        ]
+
+
+class GeneratorProfileSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = GeneratorProfile
+        fields = [
+            "id",
+            "user",
+            "organization",
+            "contact_person",
+            "contact_phone",
+            "generator_type",
+            "notes",
+            "verified_by_admin",
+        ]

@@ -1,41 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { MapPin, Clock, Package2, User, MessageSquare, Phone, Eye } from 'lucide-react';
+import { wasteAPI, wasteExtrasAPI } from '../../services/api';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 const ListingDetail = () => {
   const { id } = useParams();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [claiming, setClaiming] = useState(false);
+  const auth = useSelector(state => state.auth);
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setListing({
-        id: id,
-        title: "Clean Plastic Bottles - 50kg",
-        description: "High-quality plastic bottles, thoroughly cleaned and sorted. Perfect for recycling into new products. All bottles are PET type and in excellent condition.",
-        category: "plastic",
-        quantity: 50,
-        unit: "kg",
-        price: 5000,
-        location: "Nairobi CBD, Kenya",
-        contact_phone: "+254 700 000 000",
-        pickup_available: true,
-        delivery_available: false,
-        status: "available",
-        images: [
-          "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=500",
-          "https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=500"
-        ],
-        seller: {
-          name: "John Doe",
-          rating: 4.5,
-          total_sales: 23
-        },
-        created_at: "2025-01-15T10:00:00Z"
-      });
-      setLoading(false);
-    }, 1000);
+    const fetchListing = async () => {
+      try {
+        const resp = await wasteAPI.getListings({ id });
+        // If backend supports /listings/?id= we expect results array; else fallback
+        const data = Array.isArray(resp.data) ? resp.data[0] : resp.data;
+        setListing(data);
+      } catch (err) {
+        console.warn('Failed to load listing', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchListing();
   }, [id]);
 
   if (loading) {
@@ -199,13 +189,61 @@ const ListingDetail = () => {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
               
               <div className="space-y-3">
-                <button className="btn-outline w-full">
-                  <Eye className="h-4 w-4 mr-2" />
-                  Save to Watchlist
-                </button>
-                <button className="btn-secondary w-full">
-                  Share Listing
-                </button>
+                {listing && listing.status === 'available' && (
+                  <button
+                    className="btn-primary w-full"
+                    onClick={async () => {
+                      if (!auth.user) {
+                        toast.error('Please log in to claim listings');
+                        return;
+                      }
+                      // optimistic UI
+                      setClaiming(true);
+                      const prev = { ...listing };
+                      setListing({ ...listing, claimed_by: auth.user.username, status: 'reserved' });
+                      try {
+                        await wasteExtrasAPI.claimListing(listing.id);
+                        toast.success('Listing claimed successfully');
+                      } catch (err) {
+                        // Rollback on error
+                        setListing(prev);
+                        if (err.response && err.response.status === 409) {
+                          toast.error('Listing already claimed by another user');
+                        } else {
+                          toast.error('Failed to claim listing');
+                        }
+                      } finally {
+                        setClaiming(false);
+                      }
+                    }}
+                    disabled={claiming}
+                  >
+                    Claim Listing
+                  </button>
+                )}
+
+                {listing && listing.claimed_by && listing.claimed_by === auth.user?.username && (
+                  <button
+                    className="btn-secondary w-full"
+                    onClick={async () => {
+                      setClaiming(true);
+                      const prev = { ...listing };
+                      setListing({ ...listing, claimed_by: null, status: 'available' });
+                      try {
+                        await wasteExtrasAPI.unclaimListing(listing.id);
+                        toast.info('Listing unclaimed');
+                      } catch (err) {
+                        setListing(prev);
+                        toast.error('Failed to unclaim');
+                      } finally {
+                        setClaiming(false);
+                      }
+                    }}
+                  >
+                    Unclaim
+                  </button>
+                )}
+
                 <button className="btn-danger w-full">
                   Report Listing
                 </button>

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Package2, Plus, Search, Filter, TrendingUp, Users, DollarSign, MessageSquare } from 'lucide-react';
 import { fetchUserWaste, fetchUserStats } from '../store/slices/wasteSlice';
-import { mapBackendRoleToCanonical } from '../utils/roleUtils';
 import { fetchConversations } from '../store/slices/messageSlice';
 import { useNavigate } from 'react-router-dom';
 import Skeleton from '../components/ui/Skeleton';
@@ -225,20 +224,14 @@ const Dashboard = () => {
                     <Package2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-500">No listings found</p>
                     <div className="mt-4 flex justify-center gap-3">
-                      {/* Role-based CTAs: generators can create, recyclers can browse */}
-                      {mapBackendRoleToCanonical(user?.role) === 'generator' && (
-                        <button onClick={goCreateListing} className="inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-sm transition">
-                          <Plus className="h-4 w-4 mr-2" />
-                          Create Your First Listing
-                        </button>
-                      )}
-
-                      {mapBackendRoleToCanonical(user?.role) === 'recycler' && (
-                        <button onClick={goBrowse} className="inline-flex items-center bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow-sm">
-                          <Search className="h-4 w-4 mr-2" />
-                          Browse Listings
-                        </button>
-                      )}
+                      <button onClick={goCreateListing} className="inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-sm transition">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create Your First Listing
+                      </button>
+                      <button onClick={goBrowse} className="inline-flex items-center bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow-sm">
+                        <Search className="h-4 w-4 mr-2" />
+                        Browse Listings
+                      </button>
                     </div>
                   </div>
                 )}
@@ -252,19 +245,14 @@ const Dashboard = () => {
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                {/* Quick actions shown based on role */}
-                {mapBackendRoleToCanonical(user?.role) === 'generator' && (
-                  <button onClick={goCreateListing} className="w-full inline-flex items-center justify-start bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Listing
-                  </button>
-                )}
-                {mapBackendRoleToCanonical(user?.role) === 'recycler' && (
-                  <button onClick={goBrowse} className="w-full inline-flex items-center justify-start bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg">
-                    <Search className="h-4 w-4 mr-2" />
-                    Browse Waste
-                  </button>
-                )}
+                <button onClick={goCreateListing} className="w-full inline-flex items-center justify-start bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Listing
+                </button>
+                <button onClick={goBrowse} className="w-full inline-flex items-center justify-start bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg">
+                  <Search className="h-4 w-4 mr-2" />
+                  Browse Waste
+                </button>
                 <button onClick={goMessages} className="w-full inline-flex items-center justify-start bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg">
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Messages {unreadCount > 0 && (

@@ -5,6 +5,7 @@ import { createListing, fetchMyListings, fetchUserStats } from '../../store/slic
 import { unwrapResult } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { wasteExtrasAPI } from '../../services/api';
 
 const CreateListing = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const CreateListing = () => {
   
   const [images, setImages] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
+  const [suggestedPrice, setSuggestedPrice] = useState(null);
 
   const categories = [
     { value: '', label: 'Select Category' },
@@ -56,6 +58,10 @@ const CreateListing = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    // If category or unit or quantity changed, reset suggested price
+    if (['category', 'unit', 'quantity'].includes(name)) {
+      setSuggestedPrice(null);
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -159,6 +165,21 @@ const CreateListing = () => {
         toast.error(fallback);
       }
     }
+  };
+
+  const fetchSuggestedPrice = async () => {
+    if (!formData.category || !formData.quantity) return;
+    try {
+      const resp = await wasteExtrasAPI.estimatePrice({ type: formData.category, quantity: formData.quantity, unit: formData.unit });
+      setSuggestedPrice(resp.data.estimated_total);
+    } catch (err) {
+      console.warn('Price suggestion failed', err);
+      toast.info('Price suggestion not available');
+    }
+  };
+
+  const useSuggestedPrice = () => {
+    if (suggestedPrice !== null) setFormData(prev => ({ ...prev, price: suggestedPrice }));
   };
 
   return (
@@ -332,6 +353,11 @@ const CreateListing = () => {
                       {fieldErrors.price_per_unit && (
                         <p className="mt-1 text-sm text-red-600">{Array.isArray(fieldErrors.price_per_unit) ? fieldErrors.price_per_unit[0] : fieldErrors.price_per_unit}</p>
                       )}
+                      <div className="mt-2 flex items-center space-x-2">
+                        <button type="button" onClick={fetchSuggestedPrice} className="btn-secondary text-sm">Suggest Price</button>
+                        <button type="button" onClick={useSuggestedPrice} disabled={suggestedPrice === null} className="btn-primary text-sm">Use Suggested</button>
+                        {suggestedPrice !== null && <div className="text-sm text-gray-600">Suggested total: KSh {suggestedPrice}</div>}
+                      </div>
                     </div>
                   </div>
                 </div>
