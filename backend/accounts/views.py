@@ -36,6 +36,17 @@ def register(request):
 def login(request):
     username = request.data.get("username")
     password = request.data.get("password")
+    # Support login via either username or email.
+    if not username:
+        email = request.data.get("email")
+        if email:
+            User = get_user_model()
+            try:
+                user_obj = User.objects.filter(email__iexact=email).first()
+                if user_obj:
+                    username = getattr(user_obj, 'username', None)
+            except Exception:
+                username = None
 
     if username and password:
         user = authenticate(username=username, password=password)
@@ -127,6 +138,6 @@ def verify_user(request, user_id):
         u = User.objects.get(id=user_id)
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    u.is_verified = True
+    setattr(u, 'is_verified', True)
     u.save()
     return Response({"success": True, "user": UserSerializer(u).data})

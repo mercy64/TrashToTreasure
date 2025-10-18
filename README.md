@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # TrashToTreasure 🗂️♻️
 
 A comprehensive waste management platform that connects waste generators with collectors and recyclers, promoting sustainable waste disposal and resource recovery.
@@ -6,7 +5,7 @@ A comprehensive waste management platform that connects waste generators with co
 ## 🌟 Features
 
 - **User Authentication**: Secure registration and login system with JWT
-- **Waste Listings**: Create and browse waste disposal/pickup requests
+- **Waste Listings**: Create listings and discover materials available for collection
 - **Real-time Messaging**: Communication between users with conversations
 - **Transaction Tracking**: Monitor waste purchase transactions
 - **Dashboard**: Comprehensive overview of user activities
@@ -223,10 +222,10 @@ Note: Authenticated endpoints require JWT bearer token or session authentication
 - **Notification**: System notifications for users
 
 ## 👥 User Roles
-- **Waste Generator**: Lists recyclable materials
-- **Buyer/Recycler**: Purchases waste materials  
-- **Delivery Personnel**: Handles logistics
-- **Administrator**: Platform management
+- **Waste Generator**: Creates listings for recyclable materials
+- **Buyer/Recycler**: Purchases waste materials
+- **Delivery Personnel**: Handles logistics and pickups
+- **Administrator**: Platform management and moderation
 
 ## 🛠️ Development Setup
 
@@ -293,8 +292,4 @@ Project Link: [https://github.com/YOUR_USERNAME/TrashToTreasure](https://github.
 
 ---
 
-**Built with ❤️ for a sustainable future**"# Trash-to-treasure" 
-=======
-# TrashToTreasure
-"Waste Management Platform - React Frontend &amp; Django Backend"
->>>>>>> 6b6497ea6ce2c3e8d73b1b36025925a0fabffef8
+**Built with ❤️ for a sustainable future**

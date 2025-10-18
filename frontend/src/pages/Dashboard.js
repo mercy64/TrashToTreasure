@@ -230,7 +230,7 @@ const Dashboard = () => {
                       </button>
                       <button onClick={goBrowse} className="inline-flex items-center bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow-sm">
                         <Search className="h-4 w-4 mr-2" />
-                        Browse Listings
+                        Explore Listings
                       </button>
                     </div>
                   </div>
@@ -251,7 +251,7 @@ const Dashboard = () => {
                 </button>
                 <button onClick={goBrowse} className="w-full inline-flex items-center justify-start bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg">
                   <Search className="h-4 w-4 mr-2" />
-                  Browse Waste
+                  Explore Listings
                 </button>
                 <button onClick={goMessages} className="w-full inline-flex items-center justify-start bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg">
                   <MessageSquare className="h-4 w-4 mr-2" />

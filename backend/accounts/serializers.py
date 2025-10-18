@@ -6,7 +6,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     confirm_password = serializers.CharField(write_only=True)
 
-    class Meta:
+    class Meta:  # type: ignore
         model = User
         fields = [
             "username",
@@ -27,12 +27,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop("confirm_password")
+        # Ensure username exists. If not provided, use the email as username.
+        if not validated_data.get("username") and validated_data.get("email"):
+            validated_data["username"] = validated_data["email"]
         user = User.objects.create_user(**validated_data)
         return user
 
 
 class UserSerializer(serializers.ModelSerializer):
-    class Meta:
+    class Meta:  # type: ignore
         model = User
         fields = [
             "id",
@@ -50,7 +53,7 @@ class UserSerializer(serializers.ModelSerializer):
 class GeneratorProfileSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
 
-    class Meta:
+    class Meta:  # type: ignore
         model = GeneratorProfile
         fields = [
             "id",

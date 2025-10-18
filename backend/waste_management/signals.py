@@ -88,3 +88,25 @@ def listing_change_notify(sender, instance: WasteListing, created, **kwargs):
     title = "Listing available"
     message = f"Listing '{instance.title}' is now available."
     _notify_user(instance.user, title, message)
+
+
+# Invalidate route cache when listings change
+from . import optimizers
+from django.db.models.signals import post_delete
+
+
+@receiver(post_save, sender=WasteListing)
+def listing_invalidate_cache(sender, instance: WasteListing, created, **kwargs):
+    # when listing is changed (address, location, or removed) invalidate cached routes
+    try:
+        optimizers.cache_invalidate_for_listing(instance.id)
+    except Exception:
+        pass
+
+
+@receiver(post_delete, sender=WasteListing)
+def listing_delete_invalidate_cache(sender, instance: WasteListing, **kwargs):
+    try:
+        optimizers.cache_invalidate_for_listing(instance.id)
+    except Exception:
+        pass

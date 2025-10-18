@@ -11,7 +11,6 @@ const RegisterGenerator = () => {
   const { loading, error } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: '',
     confirm_password: '',
@@ -58,7 +57,9 @@ const RegisterGenerator = () => {
     }
 
     try {
-      const result = await dispatch(registerUser(formData));
+      // Backend requires a username field. Use the email as a sensible default.
+      const payload = { ...formData, username: formData.email };
+      const result = await dispatch(registerUser(payload));
       if (registerUser.fulfilled.match(result)) {
         toast.success('Registration successful!');
         navigate('/dashboard');
@@ -97,29 +98,7 @@ const RegisterGenerator = () => {
             )}
 
             <div className="space-y-4">
-              <div>
-                <label htmlFor="username" className="flex items-center gap-2 text-sm font-medium text-white/90"> 
-                  <User className="h-4 w-4 text-white/90" aria-hidden="true" />
-                  <span>Username</span>
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    required
-                    className="input-field bg-white/90 text-sky-900 w-full rounded-md font-medium text-base"
-                    placeholder="Enter username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    aria-label="username"
-                    aria-required="true"
-                  />
-                  {fieldErrors.username && (
-                    <p className="text-red-200 text-sm mt-1">{Array.isArray(fieldErrors.username) ? fieldErrors.username[0] : fieldErrors.username}</p>
-                  )}
-                </div>
-              </div>
+              {/* username removed: email will be used as primary identifier */}
 
               <div>
                 <label htmlFor="email" className="flex items-center gap-2 text-sm font-medium text-white/90">

@@ -13,7 +13,7 @@ SECRET_KEY = config("SECRET_KEY", default="django-insecure-your-secret-key-here"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=True, cast=bool)
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "testserver"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -123,6 +123,13 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
+
+# During local development it's common for the frontend dev server to run on
+# different ports (e.g. 3000, 3001, 3002). To avoid repeated CORS problems
+# while developing, allow all origins when DEBUG is enabled. In production
+# keep CORS_ALLOW_ALL_ORIGINS = False and enumerate allowed origins.
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
 
 # Internationalization
 LANGUAGE_CODE = "en-us"

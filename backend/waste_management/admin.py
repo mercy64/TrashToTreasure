@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import WasteListing, WasteImage, Transaction
 from .models import WastePrice, CollectionRoute
+from .models import MaterialFamily
 
 
 class WasteImageInline(admin.TabularInline):
@@ -92,3 +93,10 @@ class WastePriceAdmin(admin.ModelAdmin):
 class CollectionRouteAdmin(admin.ModelAdmin):
     list_display = ("collector", "created_at")
     readonly_fields = ("ordered_listing_ids", "created_at")
+
+
+@admin.register(MaterialFamily)
+class MaterialFamilyAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name",)
+    fieldsets = ((None, {"fields": ("name", "aliases", "description")}),)

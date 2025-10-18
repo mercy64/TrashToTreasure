@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Clock, Package2, User, MessageSquare, Phone, Eye } from 'lucide-react';
+import { MapPin, Clock, Package2, User, MessageSquare, Phone } from 'lucide-react';
 import { wasteAPI, wasteExtrasAPI } from '../../services/api';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';

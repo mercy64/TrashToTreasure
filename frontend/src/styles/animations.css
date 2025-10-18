@@ -1,0 +1,22 @@
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe-animate { animation: none !important; transition: none !important; }
+}
+
+.motion-safe-animate {
+  transition: transform 200ms ease, box-shadow 200ms ease, opacity 200ms ease;
+}
+
+.card-enter {
+  transform: translateY(8px);
+  opacity: 0;
+}
+
+.card-enter.card-enter-active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+}

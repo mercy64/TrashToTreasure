@@ -34,7 +34,7 @@ const Footer = () => {
                   onMouseEnter={(e) => (e.target.style.color = '#8dc6ff')}
                   onMouseLeave={(e) => (e.target.style.color = '')}
                 >
-                  Browse Waste
+                  Listings
                 </Link>
               </li>
               <li>

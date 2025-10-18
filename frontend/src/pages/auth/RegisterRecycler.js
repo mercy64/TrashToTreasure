@@ -11,7 +11,6 @@ const RegisterRecycler = () => {
   const { loading, error } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: '',
     confirm_password: '',
@@ -19,8 +18,7 @@ const RegisterRecycler = () => {
     last_name: '',
     phone: '',
     role: 'buyer',
-    location: '',
-    company_name: '',
+    // location and company_name removed per request
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -58,7 +56,8 @@ const RegisterRecycler = () => {
     }
 
     try {
-      const result = await dispatch(registerUser(formData));
+      const payload = { ...formData, username: formData.email };
+      const result = await dispatch(registerUser(payload));
       if (registerUser.fulfilled.match(result)) {
         toast.success('Registration successful!');
         navigate('/dashboard');
@@ -93,29 +92,6 @@ const RegisterRecycler = () => {
             )}
 
             <div className="space-y-4">
-              <div>
-                <label htmlFor="username" className="flex items-center gap-2 text-sm font-medium text-white/90"> 
-                  <User className="h-4 w-4 text-white/90" aria-hidden="true" />
-                  <span>Username</span>
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    required
-                    className="input-field bg-white/90 text-sky-900 w-full rounded-md font-medium text-base"
-                    placeholder="Enter username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    aria-label="username"
-                    aria-required="true"
-                  />
-                    {fieldErrors.username && (
-                      <p className="text-red-200 text-sm mt-1">{Array.isArray(fieldErrors.username) ? fieldErrors.username[0] : fieldErrors.username}</p>
-                    )}
-                </div>
-              </div>
 
               <div>
                 <label htmlFor="email" className="flex items-center gap-2 text-sm font-medium text-white/90">
@@ -205,37 +181,7 @@ const RegisterRecycler = () => {
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="company_name" className="block text-sm font-medium text-white/90">Company Name (optional)</label>
-                <p className="text-xs text-white/80 mb-1">Provide a company or organization name to appear on purchase requests.</p>
-                <input id="company_name" name="company_name" value={formData.company_name} onChange={handleChange} className="input-field bg-white/90 text-sky-900 w-full rounded-md" placeholder="Company / Organization name" />
-                {fieldErrors.company_name && (
-                  <p className="text-red-200 text-sm mt-1">{Array.isArray(fieldErrors.company_name) ? fieldErrors.company_name[0] : fieldErrors.company_name}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="location" className="flex items-center gap-2 text-sm font-medium text-white/90">
-                  <MapPin className="h-4 w-4 text-white/90" aria-hidden="true" />
-                  <span>Location</span>
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="location"
-                    name="location"
-                    type="text"
-                    required
-                    className="input-field bg-white/90 text-sky-900 w-full rounded-md font-medium text-base"
-                    placeholder="e.g., Nairobi, Kenya"
-                    value={formData.location}
-                    onChange={handleChange}
-                    aria-label="location"
-                  />
-                {fieldErrors.location && (
-                  <p className="text-red-200 text-sm mt-1">{Array.isArray(fieldErrors.location) ? fieldErrors.location[0] : fieldErrors.location}</p>
-                )}
-                </div>
-              </div>
+              {/* Company name and Location removed from recycler signup */}
 
               <div>
                 <label htmlFor="password" className="flex items-center gap-2 text-sm font-medium text-white/90">

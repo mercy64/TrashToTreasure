@@ -12,7 +12,10 @@ class Conversation(models.Model):
         users = list(self.participants.all())
         if len(users) >= 2:
             return f"Conversation: {users[0].username} & {users[1].username}"
-        return f"Conversation {self.id}"
+        # Use getattr to avoid static analysis warnings from Pylance about
+        # dynamically-provided model attributes like `id`.
+        conv_id = getattr(self, "id", None) or getattr(self, "pk", "unknown")
+        return f"Conversation {conv_id}"
 
 
 class Message(models.Model):

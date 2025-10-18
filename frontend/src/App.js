@@ -11,12 +11,16 @@ import { store } from './store';
 // Pages
 import Home from './pages/Home';
 import Landing from './pages/Landing';
+import About from './pages/About';
+import LiveMap from './pages/LiveMap';
+import Impact from './pages/Impact';
+import Contact from './pages/Contact';
+import FAQ from './pages/FAQ';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import RegisterGenerator from './pages/auth/RegisterGenerator';
 import RegisterRecycler from './pages/auth/RegisterRecycler';
 import RegisterDelivery from './pages/auth/RegisterDelivery';
-import Dashboard from './pages/Dashboard';
 import DashboardRouter from './pages/dashboard/DashboardRouter';
 import GeneratorDashboard from './pages/dashboard/GeneratorDashboard';
 import RecyclerDashboard from './pages/dashboard/RecyclerDashboard';
@@ -26,9 +30,13 @@ import WasteListings from './pages/waste/WasteListings';
 import CreateListing from './pages/waste/CreateListing';
 import ListingDetail from './pages/waste/ListingDetail';
 import Profile from './pages/Profile';
+import ProfileGenerator from './pages/ProfileGenerator';
 import Messages from './pages/Messages';
 import Transactions from './pages/Transactions';
 import AdminPanel from './pages/admin/AdminPanel';
+import Moderation from './pages/Moderation';
+import WastePricesAdmin from './pages/admin/WastePricesAdmin';
+import MaterialFamiliesAdmin from './pages/admin/MaterialFamiliesAdmin';
 
 const App = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -44,6 +52,11 @@ const App = () => {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Landing />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/live-map" element={<LiveMap />} />
+          <Route path="/impact" element={<Impact />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/home" element={<Home />} />
           <Route 
             path="/login" 
@@ -80,6 +93,11 @@ const App = () => {
               <Profile />
             </PrivateRoute>
           } />
+          <Route path="/profile/generator" element={
+            <PrivateRoute>
+              <ProfileGenerator />
+            </PrivateRoute>
+          } />
           
           <Route path="/create-listing" element={
             <PrivateRoute>
@@ -103,6 +121,21 @@ const App = () => {
           <Route path="/admin" element={
             <PrivateRoute requiredRole="admin">
               <AdminPanel />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/moderation" element={
+            <PrivateRoute requiredRole="admin">
+              <Moderation />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/prices" element={
+            <PrivateRoute requiredRole="admin">
+              <WastePricesAdmin />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/material-families" element={
+            <PrivateRoute requiredRole="admin">
+              <MaterialFamiliesAdmin />
             </PrivateRoute>
           } />
 

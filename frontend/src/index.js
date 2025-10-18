@@ -11,6 +11,20 @@ import 'leaflet/dist/leaflet.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+// Quiet known React Router future-flag warnings in dev unless explicitly enabled.
+if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_VERBOSE_ROUTER !== 'true') {
+  const originalWarn = console.warn.bind(console);
+  console.warn = (...args) => {
+    try {
+      const msg = String(args[0] || '');
+      if (msg.includes('React Router Future Flag Warning')) return;
+    } catch (e) {
+      // ignore parsing errors and fall through to original
+    }
+    originalWarn(...args);
+  };
+}
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>

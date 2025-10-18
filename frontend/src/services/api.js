@@ -64,6 +64,7 @@ api.interceptors.response.use(
 // Auth API
 export const authAPI = {
   login: (credentials) =>
+    // credentials may include email or username; backend will resolve either.
     api.post('/api/auth/login/', credentials),
   
   register: (userData) =>

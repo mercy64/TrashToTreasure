@@ -1,0 +1,10 @@
+{
+  "email": "testuser@example.com",
+  "password": "TestPass123!",
+  "confirm_password": "TestPass123!",
+  "first_name": "Test",
+  "last_name": "User",
+  "phone": "+1234567890",
+  "role": "waste_generator",
+  "location": "Testville"
+}

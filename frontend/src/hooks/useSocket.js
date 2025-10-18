@@ -14,35 +14,41 @@ export default function useSocket(store) {
 
     // Try connect to the backend socket namespace.
     // Priority: explicit SOCKET URL -> API base URL -> window-injected URL
-    const SOCKET_URL =
-      process.env.REACT_APP_SOCKET_URL ||
-      process.env.REACT_APP_API_URL ||
-      window.__API_SOCKET_URL__ ||
-      null;
+    // Only attempt a socket connection when an explicit socket URL is provided.
+    // Previously we fell back to the API base URL which often does not host
+    // a socket.io endpoint and caused noisy 404 polling requests. By requiring
+    // an explicit REACT_APP_SOCKET_URL the app will silently skip sockets
+    // when none are configured and rely on polling.
+    const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || window.__API_SOCKET_URL__ || null;
 
-    // If no explicit socket/API URL is configured, skip connecting.
-    // Connecting to '/' (the frontend dev server origin) causes repeated
-    // /socket.io polling requests against the dev server which returns 500/404
-    // and spams the console while no real socket server exists.
     if (!SOCKET_URL || SOCKET_URL === '/') {
-      console.info('useSocket: no SOCKET URL configured; skipping socket connection');
+      // By default keep quiet in non-debug environments to avoid noisy logs.
+      if (process.env.REACT_APP_DEBUG_SOCKETS === 'true') {
+        console.info('useSocket: no explicit SOCKET URL provided; skipping socket connection');
+      }
       return undefined;
     }
 
     const opts = { autoConnect: true, reconnectionAttempts: 5 };
     try {
-      console.info('Attempting socket.io connection to', SOCKET_URL);
+      if (process.env.REACT_APP_DEBUG_SOCKETS === 'true') {
+        console.info('Attempting socket.io connection to', SOCKET_URL);
+      }
       socketRef.current = io(SOCKET_URL, opts);
     } catch (e) {
       // If socket.io-client throws, bail out and rely on polling
-      console.warn('Socket connection failed (falling back to polling):', e.message || e);
+      if (process.env.REACT_APP_DEBUG_SOCKETS === 'true') {
+        console.warn('Socket connection failed (falling back to polling):', e.message || e);
+      }
       return undefined;
     }
 
     const socket = socketRef.current;
 
     socket.on('connect', () => {
-      console.info('Socket connected:', socket.id);
+      if (process.env.REACT_APP_DEBUG_SOCKETS === 'true') {
+        console.info('Socket connected:', socket.id);
+      }
     });
 
     socket.on('listing_created', (data) => {
@@ -60,7 +66,9 @@ export default function useSocket(store) {
     });
 
     socket.on('connect_error', (err) => {
-      console.warn('Socket connect_error:', err.message || err);
+      if (process.env.REACT_APP_DEBUG_SOCKETS === 'true') {
+        console.warn('Socket connect_error:', err.message || err);
+      }
     });
 
     return () => {

@@ -10,7 +10,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
 
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -66,18 +66,18 @@ const Login = () => {
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-white/90">Username or Email</label>
+                <label htmlFor="email" className="block text-sm font-medium text-white/90">Email address</label>
                 <div className="mt-1 relative">
                   <input
-                    id="username"
-                    name="username"
-                    type="text"
+                    id="email"
+                    name="email"
+                    type="email"
                     required
                       className="input-field pl-14 bg-white/90 text-sky-900 w-full rounded-md"
-                    placeholder="Enter your username or email"
-                    aria-label="username or email"
+                    placeholder="Email address"
+                    aria-label="email address"
                     aria-required="true"
-                    value={formData.username}
+                    value={formData.email}
                     onChange={handleChange}
                   />
                   <Mail className="h-5 w-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none" aria-hidden="true" />

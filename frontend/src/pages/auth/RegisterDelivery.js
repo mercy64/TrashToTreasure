@@ -11,7 +11,6 @@ const RegisterDelivery = () => {
   const { loading, error } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: '',
     confirm_password: '',
@@ -20,8 +19,6 @@ const RegisterDelivery = () => {
     phone: '',
     role: 'delivery',
     location: '',
-    vehicle_type: '',
-    license_number: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -59,7 +56,8 @@ const RegisterDelivery = () => {
     }
 
     try {
-      const result = await dispatch(registerUser(formData));
+      const payload = { ...formData, username: formData.email };
+      const result = await dispatch(registerUser(payload));
       if (registerUser.fulfilled.match(result)) {
         toast.success('Registration successful!');
         navigate('/dashboard');
@@ -94,29 +92,7 @@ const RegisterDelivery = () => {
             )}
 
             <div className="space-y-4">
-              <div>
-                <label htmlFor="username" className="flex items-center gap-2 text-sm font-medium text-white/90"> 
-                  <User className="h-4 w-4 text-white/90" aria-hidden="true" />
-                  <span>Username</span>
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    required
-                    className="input-field bg-white/90 text-sky-900 w-full rounded-md font-medium text-base"
-                    placeholder="Enter username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    aria-label="username"
-                    aria-required="true"
-                  />
-                    {fieldErrors.username && (
-                      <p className="text-red-200 text-sm mt-1">{Array.isArray(fieldErrors.username) ? fieldErrors.username[0] : fieldErrors.username}</p>
-                    )}
-                </div>
-              </div>
+              {/* username removed: email will be used as primary identifier */}
 
               <div>
                 <label htmlFor="email" className="flex items-center gap-2 text-sm font-medium text-white/90">
@@ -206,23 +182,7 @@ const RegisterDelivery = () => {
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="vehicle_type" className="block text-sm font-medium text-white/90">Vehicle Type</label>
-                <p className="text-xs text-white/80 mb-1">Used to match pickup sizes and plan routes.</p>
-                <input id="vehicle_type" name="vehicle_type" value={formData.vehicle_type} onChange={handleChange} className="input-field bg-white/90 text-sky-900 w-full rounded-md" placeholder="e.g., motorcycle, van" />
-                {fieldErrors.vehicle_type && (
-                  <p className="text-red-200 text-sm mt-1">{Array.isArray(fieldErrors.vehicle_type) ? fieldErrors.vehicle_type[0] : fieldErrors.vehicle_type}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="license_number" className="block text-sm font-medium text-white/90">License Number</label>
-                <p className="text-xs text-white/80 mb-1">Optional — helps with verification for trusted drivers.</p>
-                <input id="license_number" name="license_number" value={formData.license_number} onChange={handleChange} className="input-field bg-white/90 text-sky-900 w-full rounded-md" placeholder="Driver license number" />
-                {fieldErrors.license_number && (
-                  <p className="text-red-200 text-sm mt-1">{Array.isArray(fieldErrors.license_number) ? fieldErrors.license_number[0] : fieldErrors.license_number}</p>
-                )}
-              </div>
+              {/* Vehicle type and license number intentionally removed for delivery personnel signup */}
 
               <div>
                 <label htmlFor="location" className="flex items-center gap-2 text-sm font-medium text-white/90">

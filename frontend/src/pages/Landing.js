@@ -18,7 +18,7 @@ const Landing = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white/10 p-6 rounded-lg">
             <h3 className="font-semibold text-lg">Easy Listings</h3>
-            <p className="text-sm mt-2">List waste in seconds and get matched with buyers.</p>
+            <p className="text-sm mt-2">Create listings in seconds and get matched with buyers.</p>
           </div>
           <div className="bg-white/10 p-6 rounded-lg">
             <h3 className="font-semibold text-lg">Fair Prices</h3>

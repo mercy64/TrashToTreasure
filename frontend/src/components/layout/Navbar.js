@@ -11,7 +11,11 @@ import {
   MessageCircle,
   Plus,
   LogOut,
-  Settings
+  Settings,
+  Home as HomeIcon,
+  Info,
+  TrendingUp,
+  HelpCircle
 } from 'lucide-react';
 import Notifications from '../Notifications';
 
@@ -22,6 +26,18 @@ const Navbar = () => {
   const { unreadCount } = useSelector((state) => state.notifications);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const currentPath = window.location.pathname;
+
+  const publicLinks = [
+    { to: '/home', label: 'Home', Icon: HomeIcon },
+    { to: '/about', label: 'About', Icon: Info },
+    { to: '/impact', label: 'Impact', Icon: TrendingUp },
+    { to: '/faq', label: 'FAQ', Icon: HelpCircle },
+  ];
+
+  const isActive = (to) => {
+    if (to === '/') return currentPath === '/';
+    return currentPath.startsWith(to);
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -34,7 +50,7 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
+            <Link to="/home" className="flex items-center space-x-2">
               <Recycle className="h-8 w-8 text-primary" style={{color: '#8dc6ff'}} />
               <span className="text-xl font-bold text-gray-900">TrashToTreasure</span>
             </Link>
@@ -42,22 +58,31 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {/* Hide Browse Waste on the public landing, login and register pages to simplify title bar */}
-            {!(currentPath === '/' || currentPath === '/login' || currentPath === '/register') && (
-              <Link to="/listings" className="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium" style={{'--hover-color': '#22313f'}}>
-                Browse Waste
+            {/* Public links (visible for everyone) */}
+            {publicLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-all ${isActive(link.to) ? 'bg-green-50 text-green-700 ring-1 ring-green-100' : 'text-gray-700 hover:bg-gray-100 hover:text-green-600'}`}
+              >
+                <link.Icon className="h-4 w-4" />
+                <span className="hidden sm:inline">{link.label}</span>
               </Link>
-            )}
+            ))}
+            {/* Hide Browse Waste on the public landing, login and register pages to simplify title bar */}
+            {/* Browse/List removed for generator-focused UX */}
 
             {isAuthenticated ? (
               <>
+                {user?.role === 'admin' && (
+                  <Link to="/admin/prices" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">
+                    Admin
+                  </Link>
+                )}
                 <Link to="/dashboard" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium">
                   Dashboard
                 </Link>
-                <Link to="/create-listing" className="flex items-center space-x-1 text-white px-4 py-2 rounded-md text-sm font-medium" style={{backgroundColor: '#8dc6ff'}} onMouseEnter={(e) => e.target.style.backgroundColor = '#22313f'} onMouseLeave={(e) => e.target.style.backgroundColor = '#8dc6ff'}>
-                  <Plus className="h-4 w-4" />
-                  <span>List Waste</span>
-                </Link>
+                {/* List Waste removed from main nav; creation is available from dashboard */}
                 
                 {/* Notifications dropdown */}
                 <div className="relative">
@@ -136,15 +161,17 @@ const Navbar = () => {
               <div className="flex items-center space-x-4">
                 <Link
                   to="/login"
-                  className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-full text-sm font-medium transition-colors"
                 >
-                  Login
+                  <User className="h-4 w-4 inline mr-2" />
+                  <span className="hidden sm:inline">Login</span>
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                  className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-green-700 transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2"
                 >
-                  Sign up
+                  <Plus className="h-4 w-4" />
+                  <span>Sign up</span>
                 </Link>
               </div>
             )}
@@ -165,13 +192,7 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
-              <Link
-                to={(currentPath === '/login' || currentPath === '/register' || currentPath === '/') ? '/home' : '/listings'}
-                className="block text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-base font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Browse Waste
-              </Link>
+              {/* Browse Waste removed from mobile menu for generator-focused UX */}
 
               {isAuthenticated ? (
                 <>
@@ -180,28 +201,22 @@ const Navbar = () => {
                     className="block text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-base font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Dashboard
+                    <div className="flex items-center gap-2"><HomeIcon className="h-4 w-4" /> <span>Dashboard</span></div>
                   </Link>
-                  <Link
-                    to="/create-listing"
-                    className="block text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-base font-medium"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    List Waste
-                  </Link>
+                  {/* List Waste hidden in mobile nav; use dashboard to create listings */}
                   <Link
                     to="/messages"
                     className="block text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-base font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Messages
+                    <div className="flex items-center gap-2"><MessageCircle className="h-4 w-4" /> <span>Messages</span></div>
                   </Link>
                   <Link
                     to="/profile"
                     className="block text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-base font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Profile
+                    <div className="flex items-center gap-2"><User className="h-4 w-4" /> <span>Profile</span></div>
                   </Link>
                   <button
                     onClick={() => {

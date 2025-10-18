@@ -137,3 +137,75 @@ class CollectionRoute(models.Model):
     def __str__(self):
         return f"Route for {self.collector.username} @ {self.created_at}"
 
+
+class Report(models.Model):
+    """User-submitted report about a WasteListing (e.g. inappropriate content, spam)."""
+
+    STATUS_CHOICES = [
+        ("open", "Open"),
+        ("in_progress", "In Progress"),
+        ("resolved", "Resolved"),
+        ("dismissed", "Dismissed"),
+    ]
+
+    reporter = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="waste_reports",
+    )
+    listing = models.ForeignKey(WasteListing, on_delete=models.CASCADE, related_name="reports")
+    reason = models.CharField(max_length=100)
+    comments = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="open")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Report {getattr(self, 'id', 'unknown')} on {self.listing} by {self.reporter}"
+
+
+class AdminActionLog(models.Model):
+    """Audit log for admin moderation actions on listings and reports."""
+
+    ACTION_CHOICES = [
+        ("remove_listing", "Remove Listing"),
+        ("restore_listing", "Restore Listing"),
+        ("resolve_report", "Resolve Report"),
+        ("dismiss_report", "Dismiss Report"),
+        ("other", "Other"),
+    ]
+
+    admin = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="admin_actions"
+    )
+    listing = models.ForeignKey(WasteListing, on_delete=models.SET_NULL, null=True, blank=True)
+    report = models.ForeignKey(Report, on_delete=models.SET_NULL, null=True, blank=True)
+    action_type = models.CharField(max_length=50, choices=ACTION_CHOICES)
+    reason = models.CharField(max_length=200, blank=True)
+    metadata = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.action_type} by {self.admin} @ {self.created_at}"
+
+
+class MaterialFamily(models.Model):
+    """A grouping of related material types (e.g., plastic: hdpe, pet, pp).
+
+    Admins can manage these families and map canonical aliases for family-based
+    fallback pricing.
+    """
+
+    name = models.CharField(max_length=50, unique=True)
+    aliases = models.JSONField(default=list, blank=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+

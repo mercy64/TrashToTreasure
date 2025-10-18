@@ -1,344 +1,185 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { Recycle, Users, TrendingUp, Shield, ArrowRight, Star, User } from 'lucide-react';
+import { UserPlus, Heart, MapPin, Truck } from 'lucide-react';
+import { wasteExtrasAPI } from '../services/api';
+import ImpactChart from '../components/ImpactChart';
+import '../styles/animations.css';
+import LiveMapModal from '../components/Map/LiveMapModal';
+
+
 
 const Home = () => {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const [mapOpen, setMapOpen] = useState(false);
+  const [estimate, setEstimate] = useState(null);
+  const [estimating, setEstimating] = useState(false);
+  const [estimateForm, setEstimateForm] = useState({ type: 'plastic', quantity: 10, unit: 'kg' });
 
-  const features = [
-    {
-      icon: <Recycle className="h-8 w-8" style={{color: '#8dc6ff'}} />,
-      title: "Easy Waste Trading",
-      description: "List your waste materials and connect with buyers instantly"
-    },
-    {
-      icon: <Users className="h-8 w-8 text-blue-500" />,
-      title: "Verified Community",
-      description: "Join thousands of verified waste generators and recyclers"
-    },
-    {
-      icon: <TrendingUp className="h-8 w-8 text-purple-500" />,
-      title: "Fair Pricing",
-      description: "Get the best prices for your waste materials with our pricing system"
-    },
-    {
-      icon: <Shield className="h-8 w-8 text-orange-500" />,
-      title: "Secure Transactions",
-      description: "Safe and secure payment processing with M-Pesa integration"
+  const handleEstimateChange = (e) => setEstimateForm({ ...estimateForm, [e.target.name]: e.target.value });
+
+  const [estimateError, setEstimateError] = useState(null);
+
+  const submitEstimate = async (e) => {
+    e && e.preventDefault();
+    setEstimating(true);
+    setEstimateError(null);
+    setEstimate(null);
+    try {
+      const res = await wasteExtrasAPI.estimatePrice({ type: estimateForm.type, quantity: parseFloat(estimateForm.quantity), unit: estimateForm.unit });
+      const payload = res.data || res;
+      setEstimate(payload);
+    } catch (err) {
+      console.error('Estimate error', err);
+      // Prefer backend message when available
+      const serverMsg = err?.response?.data?.error || err?.message || 'Failed to retrieve estimate';
+      setEstimateError(String(serverMsg));
+    } finally {
+      setEstimating(false);
     }
-  ];
-
-  const wasteTypes = [
-    { name: "Plastic", description: "Bottles, containers, packaging", price: "$15-25/kg" },
-    { name: "Paper", description: "Newspapers, cardboard, office paper", price: "$8-15/kg" },
-    { name: "Metal", description: "Aluminum, steel, copper", price: "$20-50/kg" },
-    { name: "Electronic", description: "Old phones, computers, appliances", price: "$30-100/kg" },
-  ];
-
-  const testimonials = [
-    {
-      name: "John Kamau",
-      role: "Waste Generator",
-      location: "Nairobi",
-      comment: "TrashToTreasure helped me turn my factory waste into profit. Excellent platform!",
-      rating: 5
-    },
-    {
-      name: "Mary Wanjiku",
-      role: "Recycler",
-      location: "Mombasa", 
-      comment: "I've found consistent suppliers through this platform. Great for my recycling business.",
-      rating: 5
-    }
-  ];
+  };
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="gradient-bg text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Turn Your <span style={{color: '#8dc6ff'}}>Trash</span> Into <span className="text-yellow-300">Treasure</span>
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
-              Kenya's premier platform connecting waste generators with recyclers. 
-              Sell your waste, buy materials, and contribute to a cleaner environment.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {isAuthenticated ? (
-                <>
-                  <Link
-                    to="/create-listing"
-                    className="text-white px-8 py-4 rounded-lg text-lg font-semibold flex items-center justify-center space-x-2 transition-colors"
-                    style={{backgroundColor: '#8dc6ff'}}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#22313f'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#8dc6ff'}
-                  >
-                    <span>List Your Waste</span>
-                    <ArrowRight className="h-5 w-5" />
-                  </Link>
-                  <Link
-                    to="/listings"
-                    className="bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
-                  >
-                    Browse Materials
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/register"
-                    className="bg-green-500 hover:bg-green-600 text-white px-10 py-4 rounded-lg text-xl font-bold flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
-                  >
-                    <span>🚀 Join TrashToTreasure</span>
-                    <ArrowRight className="h-6 w-6" />
-                  </Link>
-                  <Link
-                    to="/login"
-                    className="bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
-                  >
-                    Already have an account? Sign In
-                  </Link>
-                  <Link
-                    to="/listings"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors"
-                  >
-                    Explore Platform (No Account Needed)
-                  </Link>
-                </>
-              )}
-            </div>
-            
-            {/* Additional Sign Up Incentive */}
-            {!isAuthenticated && (
-              <div className="mt-8 p-4 bg-white bg-opacity-10 rounded-lg max-w-2xl mx-auto">
-                <p className="text-lg text-white mb-2">
-                  ✨ <strong>New User Benefits:</strong>
-                </p>
-                <p className="text-gray-200">
-                  • Free account setup • Zero listing fees for first month • Access to premium buyers network
-                </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero (reference style) */}
+      <header className="bg-slate-700 text-white py-20">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">Turn your waste into value — locally</h1>
+          <p className="max-w-3xl mx-auto text-lg text-slate-200 mb-6">List recyclable materials, discover verified buyers and schedule collection — TrashToTreasure simplifies waste trading and pickup logistics for businesses and communities.</p>
+
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+            <Link to="/create-listing" className="inline-flex items-center gap-2 bg-amber-500 text-white px-6 py-3 rounded-md font-semibold shadow">List Waste</Link>
+            <Link to="/listings" className="inline-flex items-center gap-2 border border-white/30 text-white px-6 py-3 rounded-md">Browse Materials</Link>
+            <button onClick={() => setMapOpen(true)} className="inline-flex items-center gap-2 bg-white/10 border border-white/30 text-white px-4 py-2 rounded-md">Live Map</button>
+          </div>
+
+          {/* Inline quick price estimate */}
+          <div className="mt-8 max-w-2xl mx-auto bg-white/10 p-4 rounded-md">
+            <form onSubmit={submitEstimate} className="flex flex-wrap gap-3 items-center justify-center">
+              <select name="type" value={estimateForm.type} onChange={handleEstimateChange} className="px-3 py-2 rounded-md bg-white/90 text-slate-800">
+                <option value="plastic">Plastic</option>
+                <option value="cardboard">Cardboard</option>
+                <option value="glass">Glass</option>
+                <option value="metal">Metal</option>
+                <option value="textile">Textile</option>
+                <option value="electronics">Electronics</option>
+              </select>
+              <input name="quantity" value={estimateForm.quantity} onChange={handleEstimateChange} type="number" min="0" className="px-3 py-2 rounded-md text-slate-800" />
+              <select name="unit" value={estimateForm.unit} onChange={handleEstimateChange} className="px-3 py-2 rounded-md bg-white/90 text-slate-800">
+                <option value="g">g</option>
+                <option value="kg">kg</option>
+                <option value="tonne">tonne</option>
+                <option value="t">t</option>
+                <option value="lb">lb</option>
+                <option value="oz">oz</option>
+              </select>
+              <button type="submit" disabled={estimating} className="bg-green-600 text-white px-4 py-2 rounded-md">{estimating ? 'Estimating...' : 'Get Price Estimate'}</button>
+            </form>
+
+            {estimateError && (
+              <div className="mt-3 text-center text-sm text-red-300">
+                <div><strong>Error:</strong> {estimateError}</div>
+                <div className="mt-2">
+                  <button onClick={submitEstimate} className="bg-white/20 text-white px-3 py-1 rounded">Retry</button>
+                </div>
+              </div>
+            )}
+
+            {estimate && (
+              <div className="mt-3 text-center text-sm text-white/90">
+                <div className="flex items-center justify-center gap-3">
+                  <div>Unit price used: <strong className="text-white">{estimate.unit_price_used || estimate.breakdown?.unit_price_used || estimate.price_per_unit}</strong></div>
+                  {estimate.source && (estimate.source === 'family_fallback' || estimate.source === 'global_average_fallback') && (
+                    <div className="bg-yellow-300 text-yellow-900 px-2 py-1 rounded text-xs font-semibold">Estimated (fallback)</div>
+                  )}
+                </div>
+                <div>Estimated total: <strong className="text-white">{estimate.total || estimate.breakdown?.total || estimate.estimated_total}</strong></div>
               </div>
             )}
           </div>
         </div>
-      </section>
+      </header>
 
-      {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose TrashToTreasure?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We make waste trading simple, secure, and profitable for everyone
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className="text-center p-6 rounded-lg hover:shadow-lg transition-shadow">
-                <div className="flex justify-center mb-4">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Waste Types Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              What Waste Can You Trade?
-            </h2>
-            <p className="text-xl text-gray-600">
-              We accept various types of recyclable waste materials
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {wasteTypes.map((type, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {type.name}
-                </h3>
-                <p className="text-gray-600 mb-3">
-                  {type.description}
-                </p>
-                <div className="text-green-600 font-semibold">
-                  {type.price}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link
-              to="/listings"
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg text-lg font-semibold inline-flex items-center space-x-2"
-            >
-              <span>View All Materials</span>
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              How It Works
-            </h2>
-            <p className="text-xl text-gray-600">
-              Simple steps to start trading waste materials
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Stats elevated panel */}
+      <section className="-mt-12">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="bg-slate-800 text-white rounded-xl p-6 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="text-center">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-green-600">1</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Sign Up</h3>
-              <p className="text-gray-600">
-                Create your account and verify your identity to join our community
-              </p>
+              <div className="text-3xl font-bold">1,245</div>
+              <div className="text-xs text-slate-300 tracking-wider">MATERIALS LISTED</div>
             </div>
-
             <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">2</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">List or Browse</h3>
-              <p className="text-gray-600">
-                List your waste materials or browse available materials from others
-              </p>
+              <div className="text-3xl font-bold">843</div>
+              <div className="text-xs text-slate-300 tracking-wider">COLLECTIONS COMPLETED</div>
             </div>
-
             <div className="text-center">
-              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-purple-600">3</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Trade & Earn</h3>
-              <p className="text-gray-600">
-                Connect with buyers/sellers, arrange pickup, and complete secure transactions
-              </p>
+              <div className="text-3xl font-bold">12</div>
+              <div className="text-xs text-slate-300 tracking-wider">REGIONS COVERED</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold">98%</div>
+              <div className="text-xs text-slate-300 tracking-wider">MATERIAL RECOVERY RATE</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              What Our Users Say
-            </h2>
-            <p className="text-xl text-gray-600">
-              Join thousands of satisfied users across Kenya
-            </p>
-          </div>
+      {/* Impact dashboard removed per request */}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white p-8 rounded-lg shadow-md">
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-6 italic">
-                  "{testimonial.comment}"
-                </p>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mr-4">
-                    <User className="h-6 w-6 text-gray-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                    <p className="text-gray-600 text-sm">
-                      {testimonial.role} • {testimonial.location}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* How it works */}
+      <section className="py-12">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h3 className="text-2xl font-bold mb-2">How TrashToTreasure Works</h3>
+          <p className="text-gray-600 mb-6">A simple process to list materials, connect with verified buyers, and schedule pickup for recycling or reuse.</p>
 
-      {/* CTA Section */}
-      <section className="py-20 gradient-bg text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ready to Start Trading?
-          </h2>
-          <p className="text-xl mb-8 text-gray-200 max-w-2xl mx-auto">
-            Join TrashToTreasure today and turn your waste into profit while helping the environment
-          </p>
-          {!isAuthenticated ? (
-            <div className="space-y-4">
-              <Link
-                to="/register"
-                className="bg-green-500 hover:bg-green-600 text-white px-12 py-4 rounded-lg text-xl font-bold inline-flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
-              >
-                <span>🌟 Create Free Account</span>
-                <ArrowRight className="h-6 w-6" />
-              </Link>
-              <div className="mt-4">
-                <p className="text-gray-300 text-sm">
-                  Already have an account? {' '}
-                  <Link 
-                    to="/login" 
-                    className="text-white underline hover:text-blue-200 font-semibold"
-                  >
-                    Sign in here
-                  </Link>
-                </p>
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
+            <div className="p-6 bg-white rounded-lg shadow-sm">
+              <div className="flex items-center justify-center mb-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">1</div>
               </div>
-              
-              {/* Social Proof */}
-              <div className="mt-8 flex justify-center items-center space-x-8 text-gray-300">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">1000+</div>
-                  <div className="text-sm">Active Users</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">500+</div>
-                  <div className="text-sm">Waste Listings</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-white">50+</div>
-                  <div className="text-sm">Cities Covered</div>
-                </div>
+              <div className="flex items-center justify-center mb-3">
+                <UserPlus className="h-8 w-8 text-emerald-500" />
               </div>
+              <h4 className="font-semibold mb-2">Register</h4>
+              <p className="text-sm text-gray-600">Sign up as a donor, recipient organization, or delivery personnel with a simple verification process.</p>
             </div>
-          ) : (
-            <Link
-              to="/dashboard"
-              className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold inline-flex items-center space-x-2"
-            >
-              <span>Go to Dashboard</span>
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-          )}
+
+            <div className="p-6 bg-white rounded-lg shadow-sm">
+              <div className="flex items-center justify-center mb-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">2</div>
+              </div>
+              <div className="flex items-center justify-center mb-3">
+                <Heart className="h-8 w-8 text-rose-500" />
+              </div>
+              <h4 className="font-semibold mb-2">List Materials</h4>
+              <p className="text-sm text-gray-600">Create listings with photos, quantities and preferred pickup windows so nearby buyers and collectors can respond.</p>
+            </div>
+
+            <div className="p-6 bg-white rounded-lg shadow-sm">
+              <div className="flex items-center justify-center mb-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">3</div>
+              </div>
+              <div className="flex items-center justify-center mb-3">
+                <MapPin className="h-8 w-8 text-green-600" />
+              </div>
+              <h4 className="font-semibold mb-2">Match</h4>
+              <p className="text-sm text-gray-600">Our matching engine connects your listing with verified recyclers and collectors based on location and material type.</p>
+            </div>
+
+            <div className="p-6 bg-white rounded-lg shadow-sm">
+              <div className="flex items-center justify-center mb-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">4</div>
+              </div>
+              <div className="flex items-center justify-center mb-3">
+                <Truck className="h-8 w-8 text-emerald-600" />
+              </div>
+              <h4 className="font-semibold mb-2">Collect</h4>
+              <p className="text-sm text-gray-600">Schedule or accept pickups; verified collectors will pick up materials and update collection status in the app.</p>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Live map modal */}
+      <LiveMapModal open={mapOpen} onClose={() => setMapOpen(false)} markers={[]} />
     </div>
   );
 };
